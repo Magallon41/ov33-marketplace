@@ -11,12 +11,12 @@ let isFirebaseEnabled = false;
 
 try {
   const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyB2ghJt45EYlrJvLYChH6n9x7WFXgRWtyQ",
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "ed-victory.firebaseapp.com",
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "ed-victory",
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "ed-victory.firebasestorage.app",
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "261789810352",
-    appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:261789810352:web:3ccc8ea8624dc167068575",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyA_z-6o1IJId00eQLlRMA3C39DpCGIv7nQ",
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "ov33-marketplace.firebaseapp.com",
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "ov33-marketplace",
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "ov33-marketplace.firebasestorage.app",
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "387856414897",
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:387856414897:web:6f83ee2ebd9f2c0f69ca90",
   };
 
   // Validar de forma extremadamente defensiva si las variables obligatorias existen y son cadenas válidas
