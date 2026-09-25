@@ -11,7 +11,7 @@ const CACHE_KEY_TIMESTAMP = 'ov33_cache_timestamp';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutos de cache en navegador
 
 // Función de tiempo límite para evitar bloqueos por red lenta o bloqueada
-const withTimeout = (promise, ms = 15000) => {
+const withTimeout = (promise, ms = 4000) => {
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
     timeoutId = setTimeout(() => {
@@ -129,11 +129,28 @@ export function normalizeProductClassification(p) {
 }
 
 export function ProductProvider({ children }) {
-  const [products, setProducts] = useState([]);
-  const [categoryTree, setCategoryTree] = useState(INITIAL_CATEGORY_TREE);
+  const [products, setProducts] = useState(() => {
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY_PRODUCTS) : null;
+      if (cached) {
+        const parsed = JSON.parse(cached).filter(isValidMarketplaceProduct);
+        if (parsed.length > 0) return parsed.map(normalizeProductClassification);
+      }
+    } catch (e) {}
+    return INITIAL_PRODUCTS.map(normalizeProductClassification);
+  });
+
+  const [categoryTree, setCategoryTree] = useState(() => {
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY_CATEGORY_TREE) : null;
+      if (cached) return normalizeCategoryTree(JSON.parse(cached));
+    } catch (e) {}
+    return INITIAL_CATEGORY_TREE;
+  });
+
   const categories = categoryTree.map(c => c.name);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isUsingFallback, setIsUsingFallback] = useState(false);
 
   // Lista dinámica de marcas disponibles
