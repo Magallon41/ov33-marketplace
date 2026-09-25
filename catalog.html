@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f3f3",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "on-surface-variant": "#444748",
+                    "surface-container": "#eeeeee",
+                    "primary-fixed": "#e5e2e1",
+                    "primary": "#000000",
+                    "on-secondary-container": "#636262",
+                    "tertiary-fixed-dim": "#d5c4aa",
+                    "surface-tint": "#5f5e5e",
+                    "background": "#f9f9f9",
+                    "tertiary": "#000000",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "tertiary-container": "#231a09",
+                    "outline-variant": "#c4c7c7",
+                    "inverse-surface": "#2f3131",
+                    "on-primary-fixed-variant": "#474646",
+                    "on-primary-fixed": "#1c1b1b",
+                    "tertiary-fixed": "#f2e0c4",
+                    "on-tertiary-fixed-variant": "#504531",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#e2dfde",
+                    "on-tertiary-container": "#90826a",
+                    "secondary": "#5f5e5e",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#474746",
+                    "inverse-on-surface": "#f1f1f1",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-variant": "#e2e2e2",
+                    "on-tertiary-fixed": "#231a09",
+                    "surface-dim": "#dadada",
+                    "surface": "#f9f9f9",
+                    "on-surface": "#1a1c1c",
+                    "outline": "#747878",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-container": "#858383",
+                    "primary-container": "#1c1b1b",
+                    "surface-bright": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#c9c6c5",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#c9c6c5",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0",
+                    "lg": "0",
+                    "xl": "0",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "container-max": "1440px",
+                    "section-gap": "120px",
+                    "unit": "8px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "display-xl": ["Noto Serif"],
+                    "button": ["Manrope"],
+                    "headline-lg": ["Noto Serif"],
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-caps": ["Manrope"],
+                    "headline-md": ["Noto Serif"]
+            },
+            "fontSize": {
+                    "display-xl": ["80px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "button": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "letterSpacing": "0em", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+        }
+        .hairline-divider {
+            height: 1px;
+            background-color: rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body class="font-body-md">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-neutral-100 dark:border-neutral-900">
+<div class="flex justify-between items-center px-12 py-6 w-full max-w-[1440px] mx-auto">
+<span class="text-2xl font-bold tracking-tighter text-neutral-900 dark:text-neutral-50">ED VICTORY SHIRT BRAND</span>
+<div class="hidden md:flex items-center space-x-8">
+<a class="font-serif uppercase tracking-[0.2em] text-sm text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">INICIO</a>
+<a class="font-serif uppercase tracking-[0.2em] text-sm text-neutral-900 dark:text-neutral-50 border-b border-amber-600 pb-1 hover:text-amber-600 transition-colors duration-300" href="#">COLECCIONES</a>
+<a class="font-serif uppercase tracking-[0.2em] text-sm text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">REVISTA</a>
+<a class="font-serif uppercase tracking-[0.2em] text-sm text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">NOSOTROS</a>
+</div>
+<div class="flex items-center space-x-6">
+<button class="text-neutral-900 dark:text-neutral-50 hover:text-amber-600 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-neutral-900 dark:text-neutral-50 hover:text-amber-600 transition-colors">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+<button class="text-neutral-900 dark:text-neutral-50 hover:text-amber-600 transition-colors">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-[120px] max-w-[1440px] mx-auto px-12 pb-24">
+<!-- Header Section -->
+<header class="mb-16">
+<h1 class="font-display-xl text-display-xl uppercase mb-4">COLECCIÓN EXCLUSIVA</h1>
+<div class="hairline-divider w-full mb-8"></div>
+<div class="flex justify-between items-center">
+<p class="font-body-lg text-secondary uppercase tracking-widest text-xs">4 ARTÍCULOS SELECCIONADOS</p>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps">ORDENAR POR</span>
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</header>
+<div class="flex flex-col lg:flex-row gap-16">
+<!-- Sidebar Filters -->
+<aside class="w-full lg:w-64 flex-shrink-0">
+<div class="space-y-10">
+<!-- Talla -->
+<div>
+<h3 class="font-label-caps text-label-caps mb-6 border-b border-neutral-200 pb-2">TALLA</h3>
+<div class="grid grid-cols-3 gap-2">
+<button class="border border-neutral-200 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">S</button>
+<button class="border border-black bg-black text-white py-3 text-[10px] font-bold">M</button>
+<button class="border border-neutral-200 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">L</button>
+<button class="border border-neutral-200 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">XL</button>
+</div>
+</div>
+<!-- Color -->
+<div>
+<h3 class="font-label-caps text-label-caps mb-6 border-b border-neutral-200 pb-2">COLOR</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-4 h-4 bg-primary border border-neutral-300"></div>
+<span class="text-[11px] font-semibold tracking-widest uppercase group-hover:text-amber-600 transition-colors">Negro</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-4 h-4 bg-[#F5F5DC] border border-neutral-300"></div>
+<span class="text-[11px] font-semibold tracking-widest uppercase group-hover:text-amber-600 transition-colors">Beige</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-4 h-4 bg-[#B2D8D8] border border-neutral-300"></div>
+<span class="text-[11px] font-semibold tracking-widest uppercase group-hover:text-amber-600 transition-colors">Menta</span>
+</label>
+</div>
+</div>
+<!-- Precio -->
+<div>
+<h3 class="font-label-caps text-label-caps mb-6 border-b border-neutral-200 pb-2">PRECIO</h3>
+<div class="space-y-4">
+<div class="h-[2px] bg-neutral-200 relative">
+<div class="absolute h-full bg-black left-0 right-1/4"></div>
+<div class="absolute w-3 h-3 bg-black rounded-full top-1/2 -translate-y-1/2 left-0"></div>
+<div class="absolute w-3 h-3 bg-black rounded-full top-1/2 -translate-y-1/2 right-1/4"></div>
+</div>
+<div class="flex justify-between font-label-caps text-[10px]">
+<span>$0 MXN</span>
+<span>$4,500 MXN</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Product Grid -->
+<div class="flex-grow">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
+<!-- Product 1 -->
+<div class="group">
+<div class="relative aspect-[3/4] overflow-hidden bg-neutral-100 mb-6">
+<img alt="Premium mint poplin shirt" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A studio photograph of a premium mint-colored poplin shirt for men, meticulously folded and displayed on a white marble surface. The lighting is soft and directional, highlighting the crisp fabric texture and precise stitching. The color palette is composed of fresh mint greens and cool whites, creating a sophisticated and refreshing summer aesthetic. The composition is minimalist and high-end, focusing on garment quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaxD3su_n3rA_XawGBRKEGGRsFrIVe2zicGVCmoZT7qdWeL451FzIL0DaP4yeAJ-tgKpdQi8eZr3B6Tgn85UnbjSLYm-lh_QsKHibbBXOpOIzqXEqf2CK0scELZRQH6KUiIWIwLuum0BD3u0Vfg7-wHBXkPbBbvSpgORXEO69ZdHdbhJEvRp6ldhqHu1OkpLVqZNEX768GT71qxPvwWzJcRwHZyRlBEqn_zkCQ6CipEoArAnopA4ncPTPrgaSBGD98jcAjOvzyVTEz"/>
+<div class="absolute bottom-4 left-4 right-4 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="w-full bg-primary text-on-primary py-4 font-button text-button uppercase tracking-widest">AÑADIR AL CARRITO</button>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-[18px] uppercase tracking-wide mb-1">Camisa Popelina Menta</h2>
+<p class="font-body-md text-secondary text-xs uppercase tracking-widest">Algodón Premium / Corte Slim</p>
+</div>
+<span class="font-headline-md text-[16px]">$1,890 MXN</span>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="group">
+<div class="relative aspect-[3/4] overflow-hidden bg-neutral-100 mb-6">
+<img alt="Elegant beige oxford shirt" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An elegant beige Oxford shirt hanging on a minimalist black wooden hanger against a clean, off-white architectural background. The soft morning light casts subtle shadows that emphasize the high-quality basket-weave texture of the fabric. The overall mood is one of quiet luxury and timeless sophistication, using a palette of warm neutrals and ivory. The image follows an avant-garde fashion editorial style with plenty of negative space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIA4gBSp69YikeA1yrp7N-6LjFKx_nxMTXdepROHx4iLYZpNwgZkHNj41Elc6pLDMqePifSP6kHAFplZO4XGPlfZWuMjfCdVq5VXNESNBiQxr2ff62mFDGeIa_c7yb8r66FwFqKEKBCDRlL86rS0mANIGZVh1ZajO3q4z0Q-C5AsD6AkX3aANCXW6cNk_iXP1dZxFNUCUyU0co2ua-n5Gkqt62q_eMQ_6Lc9qeSTtqhUlUAvoNkw2dwnIoe1AGiMTVkKTJJl2MR_Ro"/>
+<div class="absolute bottom-4 left-4 right-4 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="w-full bg-primary text-on-primary py-4 font-button text-button uppercase tracking-widest">AÑADIR AL CARRITO</button>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-[18px] uppercase tracking-wide mb-1">Camisa Oxford Beige</h2>
+<p class="font-body-md text-secondary text-xs uppercase tracking-widest">Textura Oxford / Cuello Botón</p>
+</div>
+<span class="font-headline-md text-[16px]">$2,100 MXN</span>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="group">
+<div class="relative aspect-[3/4] overflow-hidden bg-neutral-100 mb-6">
+<img alt="Handcrafted leather wallet" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A handcrafted, minimalist black leather wallet positioned on a dark basalt stone surface. The close-up shot emphasizes the exquisite grain of the leather and the silver-stamped ED VICTORY logo. Dramatic, low-key lighting creates high contrast, highlighting the artisanal edges and charcoal tones. The aesthetic is stoic and architectural, reflecting premium menswear accessories in a monochromatic and powerful visual language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9iB4vnj4K6hH_b3F3tutgEdmgV8POX2H1DAgE5xX5DMnWouyG3lyO9lpgAAQNkj2Jt66-faeHlSvHqC_-_og_sV4dwE2I1mjClGB1jgbatjkugSJSF77XhplG0KMPz3-4MbamrIEWGYN4AdYc4DzWhvLuvpSwKNEDdePIUgEAuHxiovkD8Qgwk_LDE2guTng0-zqZjWdWrnbCSaSap7QjL2uFxOv1BEhiP7QtMmHkY5zgpnOR_NqsYVPHQOe9d2xviD1qgHDAXYx_"/>
+<div class="absolute bottom-4 left-4 right-4 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="w-full bg-primary text-on-primary py-4 font-button text-button uppercase tracking-widest">AÑADIR AL CARRITO</button>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-[18px] uppercase tracking-wide mb-1">Cartera de Piel</h2>
+<p class="font-body-md text-secondary text-xs uppercase tracking-widest">Piel de Grano / Hecho a Mano</p>
+</div>
+<span class="font-headline-md text-[16px]">$3,450 MXN</span>
+</div>
+</div>
+<!-- Product 4 -->
+<div class="group">
+<div class="relative aspect-[3/4] overflow-hidden bg-neutral-100 mb-6">
+<img alt="Nautical navy belt" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-end nautical-inspired belt made of braided navy blue cord with polished silver metallic accents and a solid buckle. The product is arranged in a circular coil on a light grey textured background that mimics concrete. The lighting is bright and crisp, highlighting the intricate weave and the metallic reflections. The color scheme is dominated by deep navy and cool silver, evoking a modern maritime elegance suitable for luxury menswear." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrctrfpTKKBkZqZE5q5nmxVc0bSQIH01D9UBoTjJmAK9566EBgkKSL0ovZKtylSfmFj7UGwDNDLsIlCmnvJmkNORDIHbXfI7qa8x8XHIIXRHJHZh4kKH8eVpsFCufyOrlclqiO84jO5CrHvK1_sA3S8kBa7Zp6c_PMcPavYSEqMzvcZgcoCkh1T09U3OdY8gYrFe4R7_RIqDmzHJD0fJSbNP4A6fzRAQnboDNONd85QqpEdmGRhk2iDWcZhoqe2AEBy7HV2v--9F1e"/>
+<div class="absolute bottom-4 left-4 right-4 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+<button class="w-full bg-primary text-on-primary py-4 font-button text-button uppercase tracking-widest">AÑADIR AL CARRITO</button>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-[18px] uppercase tracking-wide mb-1">Cinturón Náutico</h2>
+<p class="font-body-md text-secondary text-xs uppercase tracking-widest">Trenzado / Detalles en Plata</p>
+</div>
+<span class="font-headline-md text-[16px]">$1,650 MXN</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-12 py-20 max-w-7xl mx-auto">
+<div class="space-y-6">
+<span class="text-lg font-bold tracking-tighter text-neutral-900 dark:text-neutral-50">ED VICTORY SHIRT BRAND</span>
+<p class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 max-w-xs">
+                    DEFENSORES DE LA ELEGANCIA ARQUITECTÓNICA Y EL MINIMALISMO CONTEMPORÁNEO EN LA MODA MASCULINA.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col space-y-4">
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">ENVÍOS</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">DEVOLUCIONES</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">GUÍA DE TALLAS</a>
+</div>
+<div class="flex flex-col space-y-4">
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">SUSTENTABILIDAD</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">CONTACTO</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300" href="#">AVISO DE PRIVACIDAD</a>
+</div>
+</div>
+<div class="flex flex-col justify-between items-end">
+<div class="flex space-x-6">
+<span class="material-symbols-outlined text-neutral-400 hover:text-black cursor-pointer">share</span>
+<span class="material-symbols-outlined text-neutral-400 hover:text-black cursor-pointer">public</span>
+</div>
+<p class="font-serif text-[10px] tracking-widest uppercase text-neutral-500">© 2024 ED VICTORY SHIRT BRAND. ALL RIGHTS RESERVED.</p>
+</div>
+</div>
+</footer>
+</body></html>

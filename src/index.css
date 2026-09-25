@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Marketplace Core Palette ── */
+  --color-brand-orange: #ff5000;
+  --color-brand-orange-hover: #e04700;
+  --color-brand-orange-light: #fff7ed;
+  --color-brand-red: #ef4444;
+  --color-brand-red-dark: #dc2626;
+  --color-brand-yellow: #f59e0b;
+  --color-brand-emerald: #10b981;
+  --color-brand-blue: #2563eb;
+  --color-brand-dark: #0f172a;
+
+  /* ── UI Surfaces ── */
+  --color-surface-card: #ffffff;
+  --color-surface-bg: #f8fafc;
+  --color-surface-border: #e2e8f0;
+
+  /* ── Spacing ── */
+  --spacing-gutter: 20px;
+  --spacing-container-max: 1440px;
+
+  /* ── Font families ── */
+  --font-family-sans: "Plus Jakarta Sans", Manrope, ui-sans-serif, system-ui, sans-serif;
+  --font-family-body: "Plus Jakarta Sans", Manrope, ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-family: "Plus Jakarta Sans", Manrope, ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom scrollbar for horizontal categories */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes pulseSubtle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2s infinite ease-in-out;
+}
+
+@keyframes flashBadge {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.bg-shimmer-orange {
+  background: linear-gradient(90deg, #ff5000 0%, #ff7a00 50%, #ff5000 100%);
+  background-size: 200% 200%;
+  animation: flashBadge 3s infinite linear;
+}

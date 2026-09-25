@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- ── Página Principal ── -->
+  <url>
+    <loc>https://edvictory.com/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://edvictory.com/logo.png</image:loc>
+      <image:title>ED VICTORY — Camisas de Lujo para Hombre</image:title>
+      <image:caption>Marca mexicana de alta sastrería y camisas de lujo para caballero</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ── Catálogo Principal ── -->
+  <url>
+    <loc>https://edvictory.com/catalog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <!-- ── Sección de Ofertas Especiales ── -->
+  <url>
+    <loc>https://edvictory.com/ofertas</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <!-- ── Subcategorías Estratégicas (Long-Tail SEO) ── -->
+  <url>
+    <loc>https://edvictory.com/catalog?category=Camisas&amp;subcategory=Lisas</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/catalog?category=Camisas&amp;subcategory=Cuadros</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/catalog?category=Camisas&amp;subcategory=L%C3%ADneas</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <!-- ── Fichas de Producto Individuales con Imágenes ── -->
+  <url>
+    <loc>https://edvictory.com/product/1</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://lh3.googleusercontent.com/aida-public/AB6AXuDFd9KHtg7qmG68tpKtgcHsPEi6QvF6A98yB6PEBIjPgR-Ri_JY8zOdrzXvVwl3B4D4C5tJg8CBqj1N5fQ9JzI8NrCyLdqxbhbU9lKDW26-FBpoz0XGDDqKntdF8itGel452_J78eRSkkCgIONmVyUqBmCap8qdnJEEVkgjtZWTlr6SLkLm4jG4Hna9HW6z8iI_tqzfch2JifS9exugfmOQdhIrcTkvFx20uuwc6QXg5OpOoj57yBShQfh30trcmBvzzucUoCjDgtE9</image:loc>
+      <image:title>Camisa Lino Mint — ED VICTORY</image:title>
+      <image:caption>Camisa de lino italiano verde menta para hombre de corte casual y sofisticado</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/product/2</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://lh3.googleusercontent.com/aida-public/AB6AXuBcw5rh9llEg_6S2ebrr_bUqVXZ3YDeSE757KhtC0u1NxO6dFf3TEe-6YEX6DdccluU_3zliff2QVsn1qTJZ8i5N_V8OEUgnuCfQqGEyDw8UtxaoRLFXS_4FOWXvC6JBjy8UMNBFyU6Kqmo_2TqUwF64UFmqHUHMAS3kEtfmq6S-ptxCGbx8etCG0_xQc-YaQcKHAOCy4HS0FgA9Rw428GUWrmbjZKiJlQMXL-FDKIoHDpKMXnbZP9_iFByWXmIlzNPH88xzUMgZe6g</image:loc>
+      <image:title>Camisa Estructura Beige — ED VICTORY</image:title>
+      <image:caption>Camisa formal para hombre con micro-estructura y textura de alta sastrería</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/product/4</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://lh3.googleusercontent.com/aida-public/AB6AXuDaxD3su_n3rA_XawGBRKEGGRsFrIVe2zicGVCmoZT7qdWeL451FzIL0DaP4yeAJ-tgKpdQi8eZr3B6Tgn85UnbjSLYm-lh_QsKHibbBXOpOIzqXEqf2CK0scELZRQH6KUiIWIwLuum0BD3u0Vfg7-wHBXkPbBbvSpgORXEO69ZdHdbhJEvRp6ldhqHu1OkpLVqZNEX768GT71qxPvwWzJcRwHZyRlBEqn_zkCQ6CipEoArAnopA4ncPTPrgaSBGD98jcAjOvzyVTEz</image:loc>
+      <image:title>Camisa Popelina Menta — ED VICTORY</image:title>
+      <image:caption>Camisa de algodón popelina premium de fibra larga corte slim fit para caballero</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/product/5</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://lh3.googleusercontent.com/aida-public/AB6AXuBIA4gBSp69YikeA1yrp7N-6LjFKx_nxMTXdepROHx4iLYZpNwgZkHNj41Elc6pLDMqePifSP6kHAFplZO4XGPlfZWuMjfCdVq5VXNESNBiQxr2ff62mFDGeIa_c7yb8r66FwFqKEKBCDRlL86rS0mANIGZVh1ZajO3q4z0Q-C5AsD6AkX3aANCXW6cNk_iXP1dZxFNUCUyU0co2ua-n5Gkqt62q_eMQ_6Lc9qeSTtqhUlUAvoNkw2dwnIoe1AGiMTVkKTJJl2MR_Ro</image:loc>
+      <image:title>Camisa Oxford Beige — ED VICTORY</image:title>
+      <image:caption>Camisa Oxford clásica para hombre con cuello de botón y tejido resistente</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/product/8</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://lh3.googleusercontent.com/aida-public/AB6AXuBIA4gBSp69YikeA1yrp7N-6LjFKx_nxMTXdepROHx4iLYZpNwgZkHNj41Elc6pLDMqePifSP6kHAFplZO4XGPlfZWuMjfCdVq5VXNESNBiQxr2ff62mFDGeIa_c7yb8r66FwFqKEKBCDRlL86rS0mANIGZVh1ZajO3q4z0Q-C5AsD6AkX3aANCXW6cNk_iXP1dZxFNUCUyU0co2ua-n5Gkqt62q_eMQ_6Lc9qeSTtqhUlUAvoNkw2dwnIoe1AGiMTVkKTJJl2MR_Ro</image:loc>
+      <image:title>Camisa Oxford Premium Slim Fit — ED VICTORY</image:title>
+      <image:caption>Camisa de vestir Oxford Slim Fit para caballero disponible en múltiples colores</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/product/11</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-09-21</lastmod>
+    <image:image>
+      <image:loc>https://http2.mlstatic.com/D_859758-MLM84285139484_052025-O.jpg</image:loc>
+      <image:title>Camisa Rosa Cuadros Azul Regular Fit — ED VICTORY</image:title>
+      <image:caption>Camisa de cuadros 100% algodón hilado corte regular para hombre</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ── Páginas Institucionales y de Soporte ── -->
+  <url>
+    <loc>https://edvictory.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/size-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/tracking</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/shipping</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+  <url>
+    <loc>https://edvictory.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+
+</urlset>

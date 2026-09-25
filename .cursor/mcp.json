@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mercadopago-mcp-server": {
+      "url": "https://mcp.mercadopago.com/mcp"
+    },
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "firebase-tools@latest", "experimental:mcp"]
+    },
+    "envia-qosq": {
+      "url": "https://docs.envia.com/mcp"
+    }
+  }
+}

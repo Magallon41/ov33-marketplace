@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f3f3",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-surface-variant": "#444748",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed": "#e5e2e1",
+                        "primary": "#000000",
+                        "on-secondary-container": "#636262",
+                        "tertiary-fixed-dim": "#d5c4aa",
+                        "surface-tint": "#5f5e5e",
+                        "background": "#f9f9f9",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-container": "#231a09",
+                        "outline-variant": "#c4c7c7",
+                        "inverse-surface": "#2f3131",
+                        "on-primary-fixed-variant": "#474646",
+                        "on-primary-fixed": "#1c1b1b",
+                        "tertiary-fixed": "#f2e0c4",
+                        "on-tertiary-fixed-variant": "#504531",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#e2dfde",
+                        "on-tertiary-container": "#90826a",
+                        "secondary": "#5f5e5e",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#474746",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-variant": "#e2e2e2",
+                        "on-tertiary-fixed": "#231a09",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "on-surface": "#1a1c1c",
+                        "outline": "#747878",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#858383",
+                        "primary-container": "#1c1b1b",
+                        "surface-bright": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#c9c6c5",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#c9c6c5",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "section-gap": "120px",
+                        "unit": "8px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "display-xl": ["Noto Serif"],
+                        "button": ["Manrope"],
+                        "headline-lg": ["Noto Serif"],
+                        "body-lg": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "headline-md": ["Noto Serif"]
+                    },
+                    "fontSize": {
+                        "display-xl": ["80px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "button": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "letterSpacing": "0em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background">
+<header class="bg-white/90 dark:bg-black/90 backdrop-blur-md text-neutral-900 dark:text-neutral-50 fixed top-0 w-full z-50 border-b border-neutral-100 dark:border-neutral-900">
+<div class="flex justify-between items-center px-12 py-6 w-full">
+<div class="text-2xl font-bold tracking-tighter text-neutral-900 dark:text-neutral-50">ED VICTORY SHIRT BRAND</div>
+<nav class="hidden md:flex gap-12 font-serif uppercase tracking-[0.2em] text-sm">
+<a class="text-neutral-900 dark:text-neutral-50 border-b border-amber-600 pb-1 hover:text-amber-600 transition-colors duration-300" href="#">INICIO</a>
+<a class="text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">COLECCIONES</a>
+<a class="text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">REVISTA</a>
+<a class="text-neutral-400 dark:text-neutral-600 hover:text-amber-600 transition-colors duration-300" href="#">NOSOTROS</a>
+</nav>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-2xl hover:text-amber-600 transition-colors">search</button>
+<button class="material-symbols-outlined text-2xl hover:text-amber-600 transition-colors">person</button>
+<button class="material-symbols-outlined text-2xl hover:text-amber-600 transition-colors">shopping_bag</button>
+</div>
+</div>
+</header>
+<main class="pt-24">
+<section class="relative h-[921px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover grayscale brightness-75" data-alt="A high-end editorial photograph of a male model wearing a crisp, white premium shirt, standing against a stark, architectural concrete backdrop. The lighting is dramatic and directional, creating deep shadows and highlights that emphasize the fabric's texture. The overall aesthetic is minimalist and sophisticated, following a monochrome palette with sharp lines and vast negative space to convey a sense of quiet luxury." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANTspKvZucbJeXgbIFVfO1GszZsGYqzRbn8AyitsKqVh40PDB-odSn5DI6K1gxPF4WtC2WXvG9IT98_az2LP0-Ezlo5OZpQOYWLeJdUqv9_aRy15gcGfYYyYqpbOhE3LhrtcLIrILr-tOznflOxogR1S2t0gTpbOIYvm8Awhgfc7YAMJV0JD82m0y-kX6iMny8UeDA0tBMTcyFNTX6flPW3HCVJjGblSIv3idZGXSMvhDMIzaqTjBotgnm1cV_A7ckQMvqAUcV_PNa"/>
+</div>
+<div class="relative z-10 text-center px-6">
+<div class="mb-8 flex justify-center">
+<img alt="Logo" class="h-24 w-auto invert brightness-0" data-alt="The minimalist and geometric logo of ED VICTORY SHIRT BRAND, rendered in a crisp, sharp-edged vector style. The logo is displayed prominently in pure white against a darkened background, embodying modern sophistication and architectural precision. The surrounding environment is hazy and atmospheric, keeping the focus entirely on the brand's primary visual identifier." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKJHnRbAVTfZ9N-DtkFmLGJlL2jA2xOobgGM2ILOGmEPHYSJaaYDwQUyEZ9nBsm3J_hpnI6Uu5jofN6w56mzKJ9IEm9T5JGcIrBhhuwyBALONV3V2QHD5EijwRtB1O2rI1L1Y11vC0RsggKzHOMLER0ASgg7cLaq1RDz-ZxJCtNLVa0W_ToLIAtH0j_2pOcm_nBjcbPwdHhJkevGdFJonXdxrLsOnQRfgl5-4a71go52fSqDkBp9wZUiy0N67C6nzCSdtra_6EG5PD"/>
+</div>
+<h1 class="font-display-xl text-display-xl text-white mb-6 uppercase tracking-tighter">Victoria Silenciosa</h1>
+<p class="font-body-lg text-body-lg text-white/80 max-w-xl mx-auto font-light tracking-wide">La arquitectura de la camisa perfecta. Diseñada para el hombre que entiende que el lujo reside en la precisión y la sobriedad.</p>
+<div class="mt-12">
+<button class="bg-white text-black px-12 py-4 font-button text-button uppercase tracking-widest hover:bg-neutral-200 transition-colors">Ver Colección</button>
+</div>
+</div>
+</section>
+<section class="py-section-gap px-12 max-w-container-max mx-auto">
+<div class="flex justify-between items-end mb-16">
+<div>
+<h2 class="font-label-caps text-label-caps text-secondary mb-4">CURADURÍA TEMPORAL</h2>
+<h3 class="font-headline-lg text-headline-lg uppercase">Nuevos Lanzamientos</h3>
+</div>
+<a class="font-button text-button border-b border-black pb-1 hover:text-secondary transition-colors" href="#">EXPLORAR TODO</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden bg-surface-container mb-6">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A studio photograph of a premium mint-colored shirt crafted from high-quality linen, meticulously folded on a minimalist gray stone surface. The lighting is soft and diffuse, highlighting the natural texture of the fabric and the subtle cool tone of the mint green. The composition is clean and focused, reflecting a high-end fashion catalog aesthetic with a neutral, airy background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFd9KHtg7qmG68tpKtgcHsPEi6QvF6A98yB6PEBIjPgR-Ri_JY8zOdrzXvVwl3B4D4C5tJg8CBqj1N5fQ9JzI8NrCyLdqxbhbU9lKDW26-FBpoz0XGDDqKntdF8itGel452_J78eRSkkCgIONmVyUqBmCap8qdnJEEVkgjtZWTlr6SLkLm4jG4Hna9HW6z8iI_tqzfch2JifS9exugfmOQdhIrcTkvFx20uuwc6QXg5OpOoj57yBShQfh30trcmBvzzucUoCjDgtE9"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold uppercase tracking-tight">Camisa Lino Mint</h4>
+<p class="font-body-md text-body-md text-secondary">Colección Essential</p>
+</div>
+<span class="font-body-md text-body-md">$185.00</span>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden bg-surface-container mb-6">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="An editorial close-up of a beige cotton twill shirt, featuring intricate stitching and premium matte buttons. The garment is draped elegantly over a minimalist wooden chair in a bright, sunlit studio environment. The color palette is warm and organic, using earthy tones to evoke a sense of timeless sophistication and craftsmanship in luxury menswear." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcw5rh9llEg_6S2ebrr_bUqVXZ3YDeSE757KhtC0u1NxO6dFf3TEe-6YEX6DdccluU_3zliff2QVsn1qTJZ8i5N_V8OEUgnuCfQqGEyDw8UtxaoRLFXS_4FOWXvC6JBjy8UMNBFyU6Kqmo_2TqUwF64UFmqHUHMAS3kEtfmq6S-ptxCGbx8etCG0_xQc-YaQcKHAOCy4HS0FgA9Rw428GUWrmbjZKiJlQMXL-FDKIoHDpKMXnbZP9_iFByWXmIlzNPH88xzUMgZe6g"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold uppercase tracking-tight">Camisa Estructura Beige</h4>
+<p class="font-body-md text-body-md text-secondary">Corte Arquitectónico</p>
+</div>
+<span class="font-body-md text-body-md">$210.00</span>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] overflow-hidden bg-surface-container mb-6">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A high-contrast luxury product shot of a handcrafted dark brown leather wallet. The wallet is positioned on a black reflective surface, with sharp dramatic lighting accentuating the grain of the premium leather and the precision of the hand-stitched edges. The mood is masculine and stoic, aligning with a luxury brand identity that values durability and minimalist design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGnYySS-zpGvbv0lL1nZVlhO1BSPRJHmrQIUG1zaD-OOd3qjK1_06Sze-TyjVMPxW3Gl4mn_waToWk5bnynlqoKFjeZ-BoEBcHWgqdjcy3mqlgMx3daMnO4yaSmcr-kQhOZVdBoZp-tsYdz-osjaHzzVp_oBYk5ePUUUMPKkfa4SBeYqmE63v7b9D-ApzwLAFpBDHAADe609DT4ntNYL9MUnjN-AEkCj-tSKxIi-XGgj9uX92QElpBYGVQEY-KgV-FDrx4mkv4kz-c"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-body-md text-body-md font-bold uppercase tracking-tight">Billetera Piel Noble</h4>
+<p class="font-body-md text-body-md text-secondary">Accesorios Artesanales</p>
+</div>
+<span class="font-body-md text-body-md">$120.00</span>
+</div>
+</div>
+</div>
+</section>
+<section class="py-section-gap bg-surface-container-low">
+<div class="px-12 max-w-container-max mx-auto">
+<h3 class="font-headline-lg text-headline-lg uppercase mb-16 text-center">Comprar por Categoría</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<a class="relative h-[400px] group overflow-hidden" href="#">
+<img class="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-700" data-alt="A lifestyle image of formal dress shirts neatly arranged on a minimalist matte black rail in a high-end boutique. The lighting is sophisticated and focused, creating a luxury retail atmosphere. The scene is dominated by neutral tones and clean lines, emphasizing organizational perfection and premium garment quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnRp8wuBP0zV1XkhQ6okgSK_cTOABvIOMyUArFULnPQ8R4vEaMpiLu7S0Zv_SB8DPSXacnr70vreL0vRJMRY3x-cQdZce3KgZX1teloSclQuuVwIXdza41e9shVlCrQUnMigJJAQl1UbiZIYLeDCcf0_t7Dha6jK8a_WpEPoI0z2MMksWzdTjT6BypXi3-N50aiDDSgE2sgVTmzfbuh_WmSMxEiurmWpzuNVQf4bZlCO3MkdwRH0b7v_HpkJccfHGhNOCD_WvFtoLh"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white font-headline-md text-headline-md uppercase tracking-widest border-b-2 border-transparent group-hover:border-white transition-all">Formal</span>
+</div>
+</a>
+<a class="relative h-[400px] group overflow-hidden" href="#">
+<img class="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-700" data-alt="A casual lifestyle scene featuring a relaxed-fit linen shirt paired with light-colored trousers, captured in a bright Mediterranean setting with soft, natural morning sunlight. The aesthetic is breezy and elegant, focusing on comfort without sacrificing style, utilizing a palette of soft creams and warm whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxLPsg6oUOyebRXl3ae5qpFAVka8vq07EdH8v9JtpBDr5dQIIZMimNl9HHoi599fXL_oCyAPRmCtox-XbRrao4c5wpiEbT9L2-DX-dLsNc4Jht-_xXWlzy_3mZSJjItz4CBv7zWUUtg40Rl5JOnOA0b9d5l78N8Td4yMumRoJ7e2zqtDHwYO5DAK-hTk4sckK3152FCj3fhF2M5fielRHuMg6ngmPWhPQVwXHBkHQ9Zsg1KQ_oo4THRixsxHMERYfZkJ3wYTd1wc6T"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white font-headline-md text-headline-md uppercase tracking-widest border-b-2 border-transparent group-hover:border-white transition-all">Casual</span>
+</div>
+</a>
+<a class="relative h-[400px] group overflow-hidden" href="#">
+<img class="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-700" data-alt="A dramatic close-up of dark-toned luxury outerwear and structured shirts displayed in a dimly lit, avant-garde gallery space. The focus is on the rich textures of wool and silk, with subtle metallic highlights from high-quality zippers and buttons, creating a mood of mysterious and uncompromising sophistication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi-e5CaSJ8-EBQ2fOnkGuM0pLy9_IAqssfWTRyWJs5Ja73Rv8SQL0kQogYq-gqNfux8x4muUkYcGZtpGP8ZVVg-XjI8eIXuCzORUHnoWiHNdInTib1w3r8PPxWTFbBsu755jVx_q3NFDZXFtbqPCn6Z6pnXv5NeB2kKHApx9IcFU_3--NnxvYzoA-Gfjl_m5aw7xU4SNRaobfGpzKFUSvonG67YPZvsocsjAGDKyGc3DH5leUxDh8o3Tq3tvE2Mh-qWb7-SNsMpUh1"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white font-headline-md text-headline-md uppercase tracking-widest border-b-2 border-transparent group-hover:border-white transition-all">Colección NOIR</span>
+</div>
+</a>
+<a class="relative h-[400px] group overflow-hidden" href="#">
+<img class="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-700" data-alt="A collection of luxury leather goods including wallets and belts, artistically arranged on a raw marble slab. The lighting is sharp and cold, highlighting the polished surfaces and premium textures of the leather. The composition is asymmetrical and modern, reflecting an avant-garde approach to men's fashion accessories." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaVsEwvB49V8wK9biunD6x5kDwaJL5e9Us028J4DFxyoV6NUsto89T96cygUVj5SlGvx6tNn70E33_rKawKjIDsGnn9OVBPSmEqpEVOHBgHyEd5pnocsLmD_x6O-oYetLS1hRTelTJSNhSnWRlwHM3qHtDZ8pB-YHHu0EuUPih3dbpPuee82xhhiH_3lPZ8wb9wh3r2tgoUlrK0F2_HY37BYLx5L3yELje0LgD64XVGX5HhH5LI0sGdsHI5J4xcs1uOr3Bn-3VKpPX"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white font-headline-md text-headline-md uppercase tracking-widest border-b-2 border-transparent group-hover:border-white transition-all">Accesorios</span>
+</div>
+</a>
+</div>
+</div>
+</section>
+<section class="py-section-gap px-12">
+<div class="max-w-4xl mx-auto text-center">
+<h2 class="font-headline-lg text-headline-lg mb-8 uppercase tracking-tighter">Únete a la Vanguardia</h2>
+<p class="font-body-lg text-body-lg text-secondary mb-12 max-w-2xl mx-auto">Suscríbete para recibir acceso exclusivo a lanzamientos limitados y nuestra revista digital sobre estética masculina contemporánea.</p>
+<form class="flex flex-col md:flex-row gap-4 max-w-lg mx-auto">
+<input class="flex-1 bg-transparent border-b border-neutral-300 focus:border-black outline-none py-3 px-2 font-label-caps text-label-caps uppercase" placeholder="TU CORREO ELECTRÓNICO" type="email"/>
+<button class="bg-black text-white px-8 py-3 font-button text-button uppercase tracking-widest hover:bg-neutral-800 transition-colors">Suscribirse</button>
+</form>
+</div>
+</section>
+</main>
+<footer class="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 w-full border-t border-neutral-200 dark:border-neutral-800">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-12 py-20 max-w-7xl mx-auto">
+<div>
+<div class="text-lg font-bold tracking-tighter text-neutral-900 dark:text-neutral-50 mb-8 uppercase">ED VICTORY SHIRT BRAND</div>
+<p class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 leading-relaxed max-w-xs">
+                    Redefiniendo la sastrería moderna a través de la simplicidad radical y la excelencia en materiales.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-4">
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">ENVÍOS</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">DEVOLUCIONES</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">GUÍA DE TALLAS</a>
+</div>
+<div class="flex flex-col gap-4">
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">SUSTENTABILIDAD</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">CONTACTO</a>
+<a class="font-serif text-[10px] tracking-widest uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 underline decoration-neutral-300 transition-colors" href="#">AVISO DE PRIVACIDAD</a>
+</div>
+</div>
+<div class="flex flex-col items-start lg:items-end gap-6">
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-neutral-500 cursor-pointer hover:text-neutral-900">language</span>
+<span class="material-symbols-outlined text-neutral-500 cursor-pointer hover:text-neutral-900">share</span>
+<span class="material-symbols-outlined text-neutral-500 cursor-pointer hover:text-neutral-900">public</span>
+</div>
+<p class="font-serif text-[10px] tracking-widest uppercase text-neutral-400">
+                    © 2024 ED VICTORY SHIRT BRAND. ALL RIGHTS RESERVED.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>

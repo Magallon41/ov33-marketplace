@@ -1,0 +1,105 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Funciones de Seguridad y Autorización ────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // ── Usuarios ──────────────────────────────────────────────────────────────
+    // Lectura: El propio usuario o un administrador. Nadie puede listar la colección completa.
+    // Creación: Únicamente con rol 'customer' (previene auto-asignación de admin).
+    // Actualización: El propio usuario NO puede modificar su campo 'role'. Solo admins pueden cambiar roles.
+    match /users/{userId} {
+      allow list: if isAdmin();
+      allow get: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == userId &&
+        (!('role' in request.resource.data) || request.resource.data.role == 'customer');
+      allow update: if isAuthenticated() && (
+        (request.auth.uid == userId && (!('role' in request.resource.data) || request.resource.data.role == resource.data.role)) ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ── Órdenes ───────────────────────────────────────────────────────────────
+    // Lectura masiva (list): Estrictamente restringida a administradores (previene scraping de PII).
+    // Lectura individual (get): Administradores, el comprador autenticado, o consulta por ID exacto.
+    // Creación: Permitida para clientes con estado inicial 'Pendiente de Pago'.
+    // Actualización: Solo administradores o avances de estado legítimos con candado de integridad.
+    match /orders/{orderId} {
+      allow list: if isAdmin();
+      allow get: if isAdmin() ||
+        (isAuthenticated() && (
+          (resource.data.userId == request.auth.uid) ||
+          (resource.data.customerEmail == request.auth.token.email)
+        )) ||
+        // Consulta puntual por ID de orden
+        (resource.data.id == orderId);
+
+      allow create: if (
+        request.resource.data.status == 'Pendiente de Pago' ||
+        isAdmin()
+      );
+
+      allow update: if isAdmin() || (
+        // Candado estricto de integridad: no se pueden adulterar precios, items ni cliente
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.total == resource.data.total &&
+        request.resource.data.items == resource.data.items &&
+        request.resource.data.customerEmail == resource.data.customerEmail &&
+        // Solo se permite avanzar de Pendiente a Procesando o Cancelado
+        resource.data.status == 'Pendiente de Pago' &&
+        request.resource.data.status in ['Procesando', 'Cancelado', 'Pendiente de Pago']
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // ── Productos ─────────────────────────────────────────────────────────────
+    // Lectura pública del catálogo. Escritura exclusivamente para administradores.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Categorías ────────────────────────────────────────────────────────────
+    // Lectura pública. Escritura exclusivamente para administradores.
+    match /categories/{catId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Suscriptores al Newsletter ────────────────────────────────────────────
+    // Cualquiera puede suscribirse si el correo tiene formato mínimo. Solo administradores pueden leer/borrar.
+    match /newsletter_subscribers/{subId} {
+      allow create: if request.resource.data.email is string &&
+        request.resource.data.email.size() >= 5;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+
+    // ── Registro de Errores ────────────────────────────────────────────────────
+    // Reporte de excepciones frontend. Lectura y mantenimiento solo para administradores.
+    match /unhandled_errors/{errorId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Diagnóstico del Sistema ────────────────────────────────────────────────
+    // Prueba de conectividad ejecutada desde el Panel de Administración.
+    match /system_diagnostics/{docId} {
+      allow read, write, delete: if isAdmin();
+    }
+  }
+}
+
