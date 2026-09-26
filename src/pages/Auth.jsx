@@ -34,6 +34,9 @@ export function Auth() {
         return 'El correo electrónico o la contraseña son incorrectos.';
       case 'auth/too-many-requests':
         return 'Demasiados intentos fallidos. Por favor, inténtalo más tarde.';
+      case 'auth/configuration-not-found':
+      case 'auth/operation-not-allowed':
+        return 'El proveedor de inicio de sesión por correo aún no está habilitado en Firebase Console (Authentication > Sign-in method).';
       default:
         return 'Ha ocurrido un error al autenticar. Por favor verifica tus datos.';
     }

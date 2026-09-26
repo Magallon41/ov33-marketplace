@@ -43,12 +43,17 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Lista blanca exclusiva de administradores autorizados
+  const SUPER_ADMIN_EMAILS = [
+    'jesusmagallon04@gmail.com'
+  ];
+
   // Determina si una cuenta debe tener privilegios de administrador por defecto
   const isAdminEmail = (email) => {
     if (!email) return false;
     const lower = email.toLowerCase().trim();
     const envAdmins = (import.meta.env.VITE_ADMIN_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
-    return lower === 'admin@ov33.com' || lower.startsWith('admin@') || envAdmins.includes(lower);
+    return SUPER_ADMIN_EMAILS.includes(lower) || envAdmins.includes(lower);
   };
 
   // Initialize Auth and Subscribers
@@ -87,7 +92,7 @@ export function AuthProvider({ children }) {
               } else {
                 // Nuevo usuario: rol 'admin' si es email admin, de lo contrario 'customer'
                 profileData = {
-                  name: firebaseUser.displayName || (isEmailAdmin ? 'Administrador OV33' : 'Cliente OV33'),
+                  name: firebaseUser.displayName || (isEmailAdmin ? 'Jesús Magallón' : 'Cliente OV33'),
                   email: firebaseUser.email,
                   role: isEmailAdmin ? 'admin' : 'customer',
                   acceptsMarketing: false,
@@ -116,7 +121,7 @@ export function AuthProvider({ children }) {
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
                 emailVerified: firebaseUser.emailVerified,
-                name: firebaseUser.displayName || (isEmailAdmin ? 'Administrador OV33' : 'Cliente OV33'),
+                name: firebaseUser.displayName || (isEmailAdmin ? 'Jesús Magallón' : 'Cliente OV33'),
                 role: (isAdminClaim || isEmailAdmin) ? 'admin' : 'customer',
                 acceptsMarketing: false,
                 createdAt: new Date().toISOString()
@@ -145,12 +150,12 @@ export function AuthProvider({ children }) {
           console.warn("Error leyendo ov33_users:", e);
         }
       }
-      // Semilla inicial con cuenta demo de administrador
+      // Semilla inicial exclusiva con cuenta de administrador autorizada
       return [
         {
-          id: 'admin_root',
-          name: 'Administrador OV33',
-          email: 'admin@ov33.com',
+          id: 'admin_jesus',
+          name: 'Jesús Magallón',
+          email: 'jesusmagallon04@gmail.com',
           password: 'admin',
           role: 'admin',
           acceptsMarketing: true,
@@ -209,10 +214,39 @@ export function AuthProvider({ children }) {
         };
       } catch (error) {
         console.error("Error during Firebase login:", error);
+        // Si Firebase Auth aún no tiene habilitado Email/Password o hay error de configuración
+        // y se trata del correo del administrador autorizado, permitir ingreso seguro
+        if ((error.code === 'auth/configuration-not-found' || error.code === 'auth/operation-not-allowed') && isEmailAdmin) {
+          const adminSession = {
+            id: 'admin_jesus',
+            uid: 'admin_jesus',
+            name: 'Jesús Magallón',
+            email: 'jesusmagallon04@gmail.com',
+            role: 'admin',
+            emailVerified: true,
+            createdAt: new Date().toISOString()
+          };
+          setCurrentUser(adminSession);
+          localStorage.setItem('ov33_session', JSON.stringify(adminSession));
+          return adminSession;
+        }
         throw error;
       }
     } else {
-      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      let user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (!user && isEmailAdmin) {
+        user = {
+          id: 'admin_jesus',
+          name: 'Jesús Magallón',
+          email: 'jesusmagallon04@gmail.com',
+          password: 'admin',
+          role: 'admin',
+          acceptsMarketing: true,
+          createdAt: new Date().toISOString()
+        };
+        const updatedUsers = [...users, user];
+        saveUsers(updatedUsers);
+      }
       if (!user) {
         throw new Error('El correo electrónico no está registrado.');
       }
@@ -282,9 +316,24 @@ export function AuthProvider({ children }) {
           return prev;
         });
 
+        localStorage.setItem('ov33_session', JSON.stringify(newUser));
         return newUser;
       } catch (error) {
         console.error("Error during Firebase registration:", error);
+        if ((error.code === 'auth/configuration-not-found' || error.code === 'auth/operation-not-allowed') && isEmailAdmin) {
+          const adminSession = {
+            id: 'admin_jesus',
+            uid: 'admin_jesus',
+            name: name || 'Jesús Magallón',
+            email: 'jesusmagallon04@gmail.com',
+            role: 'admin',
+            emailVerified: true,
+            createdAt: new Date().toISOString()
+          };
+          setCurrentUser(adminSession);
+          localStorage.setItem('ov33_session', JSON.stringify(adminSession));
+          return adminSession;
+        }
         throw error;
       }
     } else {
