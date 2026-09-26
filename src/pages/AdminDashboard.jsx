@@ -182,7 +182,7 @@ const uploadToImgBB = async (base64Str) => {
 export function AdminDashboard() {
   const { currentUser, users, subscribers, updateUserRole, deleteUser, deleteSubscriber, fetchAdminData } = useAuth();
   const { 
-    products, categories, categoryTree = [], orders, isFirebaseEnabled, isUsingFallback,
+    products, categories, categoryTree = [], orders, isFirebaseEnabled, isUsingFallback, refreshCatalog,
     addProduct, updateProduct, deleteProduct, 
     addCategory, deleteCategory, updateCategory, 
     addSubcategory, updateSubcategory, deleteSubcategory,
@@ -1366,17 +1366,31 @@ export function AdminDashboard() {
         {activeTab === 'products' && (
           <div className="space-y-8 animate-[fadeIn_0.3s_ease]">
 
-            {/* ⚠️ Firebase Offline Warning — bloquea edición si no hay conexión a la nube */}
+            {/* ⚠️ Firebase Offline Info y botón de reconexión */}
             {isUsingFallback && (
-              <div className="border-2 border-red-500 bg-red-50 rounded-sm p-4 flex items-start gap-4">
-                <span className="material-symbols-outlined text-red-600 text-[28px] mt-0.5 flex-shrink-0">cloud_off</span>
-                <div>
-                  <p className="font-semibold text-red-700 text-sm uppercase tracking-wider mb-1">⚠️ Sin conexión a Firebase — Edición bloqueada</p>
-                  <p className="text-red-600 text-sm">
-                    La plataforma no puede conectar con la base de datos en la nube. Cualquier producto que agregues o edites ahora <strong>se perderá</strong> al recargar la página. Por tu seguridad, las acciones del catálogo están bloqueadas hasta restaurar la conexión.
-                  </p>
-                  <p className="text-red-500 text-xs mt-2">Recarga la página o verifica tu conexión a internet para intentar reconectar.</p>
+              <div className="border border-amber-500/40 bg-amber-50/90 rounded-none p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <span className="material-symbols-outlined text-amber-600 text-[26px] mt-0.5 flex-shrink-0">cloud_off</span>
+                  <div>
+                    <p className="font-semibold text-amber-900 text-xs uppercase tracking-wider mb-1">
+                      Catálogo en Modo Local (Offline)
+                    </p>
+                    <p className="text-amber-800 text-xs">
+                      La app está leyendo los productos desde la memoria del navegador. Haz clic en reconectar para sincronizar en tiempo real con Firebase Firestore.
+                    </p>
+                  </div>
                 </div>
+                <button
+                  onClick={async () => {
+                    showToast("Reconectando con Firebase Firestore...", "info");
+                    if (refreshCatalog) await refreshCatalog();
+                    showToast("¡Verificación de conexión completada!", "success");
+                  }}
+                  className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase px-4 py-2.5 flex items-center gap-2 rounded-none transition-colors whitespace-nowrap cursor-pointer shadow-xs"
+                >
+                  <span className="material-symbols-outlined text-[16px]">refresh</span>
+                  Reconectar a la Nube
+                </button>
               </div>
             )}
 
@@ -1388,17 +1402,12 @@ export function AdminDashboard() {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <button 
-                  onClick={isUsingFallback ? undefined : handleOpenAdd}
-                  disabled={isUsingFallback}
-                  title={isUsingFallback ? 'No disponible: Firebase sin conexión' : 'Añadir nuevo producto'}
-                  className={`px-6 py-3 font-button text-xs uppercase tracking-widest flex items-center gap-2 transition-colors ${
-                    isUsingFallback
-                      ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                      : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'
-                  }`}
+                  onClick={handleOpenAdd}
+                  title="Añadir nuevo producto"
+                  className="px-6 py-3 font-button text-xs uppercase tracking-widest flex items-center gap-2 transition-colors bg-black text-white hover:bg-neutral-800 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[16px]">{isUsingFallback ? 'block' : 'add'}</span>
-                  {isUsingFallback ? 'BLOQUEADO — SIN CONEXIÓN' : 'AÑADIR PRODUCTO'}
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  AÑADIR PRODUCTO
                 </button>
               </div>
             </div>

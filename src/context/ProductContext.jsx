@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_CATEGORY_TREE, INITIAL_ORDERS, INITIAL_BRANDS } from './initialProducts';
 import { db, isFirebaseEnabled } from '../utils/firebase';
 import { collection, getDocs, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
@@ -170,9 +170,9 @@ export function ProductProvider({ children }) {
     return Array.from(brandMap.values());
   }, [products]);
 
-  useEffect(() => {
-    const loadInitialData = async () => {
-      // 0. Cache inteligente de 15 minutos
+  const loadInitialData = useCallback(async (forceCloud = false) => {
+    // 0. Cache inteligente de 15 minutos (a menos que se fuerce la recarga desde la nube)
+    if (!forceCloud) {
       try {
         const cachedTime = localStorage.getItem(CACHE_KEY_TIMESTAMP);
         const cachedProds = localStorage.getItem(CACHE_KEY_PRODUCTS);
@@ -194,6 +194,7 @@ export function ProductProvider({ children }) {
             setProducts(parsedProds);
             setCategoryTree(parsedTree);
             setLoading(false);
+            setIsUsingFallback(false);
             if (import.meta.env.DEV) {
               console.log(`⚡ Catálogo OV33 cargado desde cache local (${parsedProds.length} productos, ${parsedTree.length} categorías).`);
             }
@@ -203,73 +204,77 @@ export function ProductProvider({ children }) {
       } catch (cacheErr) {
         console.warn("Aviso leyendo cache:", cacheErr);
       }
+    }
 
-      if (isFirebaseEnabled && db) {
-        if (import.meta.env.DEV) {
-          console.log("⚡ Consultando Firestore para catálogo OV33...");
+    if (isFirebaseEnabled && db) {
+      if (import.meta.env.DEV) {
+        console.log("⚡ Consultando Firestore para catálogo OV33...");
+      }
+
+      try {
+        const productsCol = collection(db, 'ov33_products');
+        const productsSnapshot = await withTimeout(getDocs(productsCol), 15000);
+        const loadedProducts = [];
+        productsSnapshot.forEach(docSnap => {
+          const prod = { id: docSnap.id, ...docSnap.data() };
+          if (isValidMarketplaceProduct(prod)) {
+            loadedProducts.push(normalizeProductClassification(prod));
+          }
+        });
+        loadedProducts.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+        
+        let finalTree = INITIAL_CATEGORY_TREE;
+        try {
+          const categoriesCol = collection(db, 'ov33_categories');
+          const categoriesSnapshot = await withTimeout(getDocs(categoriesCol), 8000);
+          if (!categoriesSnapshot.empty) {
+            const treeDoc = categoriesSnapshot.docs.find(d => d.id === 'tree');
+            const listDoc = categoriesSnapshot.docs.find(d => d.id === 'list');
+            if (treeDoc && Array.isArray(treeDoc.data().tree)) {
+              finalTree = normalizeCategoryTree(treeDoc.data().tree);
+            } else if (listDoc && Array.isArray(listDoc.data().categories)) {
+              finalTree = normalizeCategoryTree(listDoc.data().categories);
+            }
+          }
+        } catch (catErr) {
+          console.warn("Categorías usando valor predeterminado:", catErr);
         }
+
+        // Si Firestore está vacío, usar el catálogo de iniciales
+        if (loadedProducts.length === 0) {
+          setProducts(INITIAL_PRODUCTS.map(normalizeProductClassification));
+        } else {
+          setProducts(loadedProducts);
+        }
+        setCategoryTree(finalTree);
+        setIsUsingFallback(false);
 
         try {
-          const productsCol = collection(db, 'ov33_products');
-          const productsSnapshot = await withTimeout(getDocs(productsCol), 15000);
-          const loadedProducts = [];
-          productsSnapshot.forEach(docSnap => {
-            const prod = { id: docSnap.id, ...docSnap.data() };
-            if (isValidMarketplaceProduct(prod)) {
-              loadedProducts.push(normalizeProductClassification(prod));
-            }
-          });
-          loadedProducts.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
-          
-          let finalTree = INITIAL_CATEGORY_TREE;
-          try {
-            const categoriesCol = collection(db, 'ov33_categories');
-            const categoriesSnapshot = await withTimeout(getDocs(categoriesCol), 8000);
-            if (!categoriesSnapshot.empty) {
-              const treeDoc = categoriesSnapshot.docs.find(d => d.id === 'tree');
-              const listDoc = categoriesSnapshot.docs.find(d => d.id === 'list');
-              if (treeDoc && Array.isArray(treeDoc.data().tree)) {
-                finalTree = normalizeCategoryTree(treeDoc.data().tree);
-              } else if (listDoc && Array.isArray(listDoc.data().categories)) {
-                finalTree = normalizeCategoryTree(listDoc.data().categories);
-              }
-            }
-          } catch (catErr) {
-            console.warn("Categorías usando valor predeterminado:", catErr);
-          }
+          localStorage.setItem(CACHE_KEY_PRODUCTS, JSON.stringify(loadedProducts.length > 0 ? loadedProducts : INITIAL_PRODUCTS));
+          localStorage.setItem(CACHE_KEY_CATEGORY_TREE, JSON.stringify(finalTree));
+          localStorage.setItem(CACHE_KEY_CATEGORIES, JSON.stringify(finalTree.map(c => c.name)));
+          localStorage.setItem(CACHE_KEY_TIMESTAMP, Date.now().toString());
+        } catch (e) {}
 
-          // Si Firestore está vacío, usar el catálogo de iniciales
-          if (loadedProducts.length === 0) {
-            setProducts(INITIAL_PRODUCTS.map(normalizeProductClassification));
-          } else {
-            setProducts(loadedProducts);
-          }
-          setCategoryTree(finalTree);
-          setIsUsingFallback(false);
-
-          try {
-            localStorage.setItem(CACHE_KEY_PRODUCTS, JSON.stringify(loadedProducts.length > 0 ? loadedProducts : INITIAL_PRODUCTS));
-            localStorage.setItem(CACHE_KEY_CATEGORY_TREE, JSON.stringify(finalTree));
-            localStorage.setItem(CACHE_KEY_CATEGORIES, JSON.stringify(finalTree.map(c => c.name)));
-            localStorage.setItem(CACHE_KEY_TIMESTAMP, Date.now().toString());
-          } catch (e) {}
-
-        } catch (prodErr) {
-          console.error("Error cargando productos de Firestore:", prodErr);
-          setIsUsingFallback(true);
-          loadFromLocalStorageFallback();
-          setLoading(false);
-          return;
-        }
-      } else {
+      } catch (prodErr) {
+        console.error("Error cargando productos de Firestore:", prodErr);
         setIsUsingFallback(true);
         loadFromLocalStorageFallback();
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-    };
-
-    loadInitialData();
+    } else {
+      setIsUsingFallback(true);
+      loadFromLocalStorageFallback();
+    }
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
+
+  const refreshCatalog = () => loadInitialData(true);
 
   const loadFromLocalStorageFallback = () => {
     if (import.meta.env.DEV) {
@@ -651,6 +656,7 @@ export function ProductProvider({ children }) {
       loading,
       isFirebaseEnabled,
       isUsingFallback,
+      refreshCatalog,
       addProduct,
       updateProduct,
       deleteProduct,
