@@ -216,7 +216,7 @@ export function AdminDashboard() {
       }
     }
     try {
-      const stored = localStorage.getItem('ed_victory_wholesale_leads');
+      const stored = localStorage.getItem('ov33_wholesale_leads') || localStorage.getItem('ed_victory_wholesale_leads');
       if (stored) {
         const local = JSON.parse(stored);
         const ids = new Set(loaded.map(l => l.id));
@@ -399,7 +399,7 @@ export function AdminDashboard() {
       "Acepta Marketing": u.acceptsMarketing ? 'SÍ' : 'NO'
     }));
 
-    exportToCSV(csvData, "clientes_ed_victory.csv", headers);
+    exportToCSV(csvData, "clientes_ov33_market.csv", headers);
     showToast("Base de usuarios exportada con éxito.", "success");
   };
 
@@ -415,7 +415,7 @@ export function AdminDashboard() {
       "Fecha Suscripcion": s.createdAt ? new Date(s.createdAt).toISOString() : ''
     }));
 
-    exportToCSV(csvData, "suscriptores_boletin_ed_victory.csv", headers);
+    exportToCSV(csvData, "suscriptores_boletin_ov33.csv", headers);
     showToast("Lista de suscriptores exportada con éxito.", "success");
   };
 
@@ -440,7 +440,7 @@ export function AdminDashboard() {
       Estatus: l.status || 'Nuevo'
     }));
 
-    exportToCSV(csvData, "prospectos_mayoristas_ed_victory.csv", headers);
+    exportToCSV(csvData, "prospectos_mayoristas_ov33.csv", headers);
     showToast("Base de mayoristas exportada con éxito.", "success");
   };
 
@@ -456,7 +456,7 @@ export function AdminDashboard() {
         console.warn("Error actualizando status de prospecto en Firestore:", err);
       }
     }
-    localStorage.setItem('ed_victory_wholesale_leads', JSON.stringify(updated));
+    localStorage.setItem('ov33_wholesale_leads', JSON.stringify(updated));
     showToast(`Estado de prospecto actualizado a "${newStatus}".`, 'success');
   };
 
@@ -473,7 +473,7 @@ export function AdminDashboard() {
         console.warn("Error eliminando lead en Firestore:", err);
       }
     }
-    localStorage.setItem('ed_victory_wholesale_leads', JSON.stringify(updated));
+    localStorage.setItem('ov33_wholesale_leads', JSON.stringify(updated));
     showToast("Prospecto mayorista eliminado con éxito.", "success");
   };
 
@@ -982,7 +982,7 @@ export function AdminDashboard() {
 
   // Sincronizar catálogo local a la nube (ImgBB + Firestore)
   const handleSyncLocalToCloud = async () => {
-    const stored = localStorage.getItem('ed_victory_products');
+    const stored = localStorage.getItem('ov33_products') || localStorage.getItem('ed_victory_products');
     if (!stored) {
       showToast("No se encontraron productos en la memoria local.", "error");
       return;
@@ -1052,7 +1052,7 @@ export function AdminDashboard() {
         if (isFirebaseEnabled) {
           const { db } = await import('../utils/firebase');
           const { doc, setDoc } = await import('firebase/firestore');
-          await setDoc(doc(db, 'products', String(product.id)), productPayload);
+          await setDoc(doc(db, 'ov33_products', String(product.id)), productPayload);
         }
 
         uploadedProductPayloads.push(productPayload);
@@ -1063,7 +1063,7 @@ export function AdminDashboard() {
         const uploadedP = uploadedProductPayloads.find(up => up.id === p.id);
         return uploadedP ? uploadedP : p;
       });
-      localStorage.setItem('ed_victory_products', JSON.stringify(updatedLocalProducts));
+      localStorage.setItem('ov33_products', JSON.stringify(updatedLocalProducts));
 
       // Recargar catálogo
       showToast("¡Catálogo sincronizado con éxito!", "success");

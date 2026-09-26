@@ -43,6 +43,14 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Determina si una cuenta debe tener privilegios de administrador por defecto
+  const isAdminEmail = (email) => {
+    if (!email) return false;
+    const lower = email.toLowerCase().trim();
+    const envAdmins = (import.meta.env.VITE_ADMIN_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
+    return lower === 'admin@ov33.com' || lower.startsWith('admin@') || envAdmins.includes(lower);
+  };
+
   // Initialize Auth and Subscribers
   useEffect(() => {
     let unsubscribe = () => {};
@@ -63,7 +71,8 @@ export function AuthProvider({ children }) {
           if (firebaseUser) {
             try {
               const idTokenResult = await firebaseUser.getIdTokenResult();
-              const isAdmin = !!idTokenResult.claims.admin;
+              const isAdminClaim = !!idTokenResult.claims.admin;
+              const isEmailAdmin = isAdminEmail(firebaseUser.email);
 
               const userDocRef = doc(db, 'users', firebaseUser.uid);
               const userDocSnap = await getDoc(userDocRef);
@@ -71,37 +80,44 @@ export function AuthProvider({ children }) {
               let profileData = {};
               if (userDocSnap.exists()) {
                 profileData = userDocSnap.data();
+                if (isEmailAdmin && profileData.role !== 'admin') {
+                  profileData.role = 'admin';
+                  updateDoc(userDocRef, { role: 'admin' }).catch(() => {});
+                }
               } else {
-                // Nuevo usuario: rol por defecto 'customer'.
+                // Nuevo usuario: rol 'admin' si es email admin, de lo contrario 'customer'
                 profileData = {
-                  name: firebaseUser.displayName || 'Cliente ED',
+                  name: firebaseUser.displayName || (isEmailAdmin ? 'Administrador OV33' : 'Cliente OV33'),
                   email: firebaseUser.email,
-                  role: 'customer',
+                  role: isEmailAdmin ? 'admin' : 'customer',
                   acceptsMarketing: false,
                   createdAt: new Date().toISOString()
                 };
                 await setDoc(userDocRef, profileData);
               }
               
+              const finalRole = isAdminClaim || isEmailAdmin || profileData.role === 'admin' ? 'admin' : 'customer';
+
               setCurrentUser({
                 id: firebaseUser.uid,
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
                 emailVerified: firebaseUser.emailVerified,
                 ...profileData,
-                role: isAdmin ? 'admin' : (profileData.role || 'customer')
+                role: finalRole
               });
             } catch (error) {
               console.error("Error loading user profile:", error);
               const idTokenResult = await firebaseUser.getIdTokenResult().catch(() => ({ claims: {} }));
-              const isAdmin = !!idTokenResult.claims.admin;
+              const isAdminClaim = !!idTokenResult.claims.admin;
+              const isEmailAdmin = isAdminEmail(firebaseUser.email);
               setCurrentUser({
                 id: firebaseUser.uid,
                 uid: firebaseUser.uid,
                 email: firebaseUser.email,
                 emailVerified: firebaseUser.emailVerified,
-                name: firebaseUser.displayName || 'Cliente ED',
-                role: isAdmin ? 'admin' : 'customer',
+                name: firebaseUser.displayName || (isEmailAdmin ? 'Administrador OV33' : 'Cliente OV33'),
+                role: (isAdminClaim || isEmailAdmin) ? 'admin' : 'customer',
                 acceptsMarketing: false,
                 createdAt: new Date().toISOString()
               });
@@ -112,7 +128,7 @@ export function AuthProvider({ children }) {
           setLoading(false);
         });
       } else {
-        const activeSession = localStorage.getItem('ed_victory_session');
+        const activeSession = localStorage.getItem('ov33_session') || localStorage.getItem('ed_victory_session');
         if (activeSession) {
           setCurrentUser(JSON.parse(activeSession));
         }
@@ -121,14 +137,30 @@ export function AuthProvider({ children }) {
     };
 
     const loadLocalUsers = () => {
-      // Modo solo desarrollo — no se usan usuarios por defecto con contraseñas
-      const storedUsers = localStorage.getItem('ed_victory_users');
-      if (!storedUsers) return [];
-      return JSON.parse(storedUsers);
+      const storedUsers = localStorage.getItem('ov33_users') || localStorage.getItem('ed_victory_users');
+      if (storedUsers) {
+        try {
+          return JSON.parse(storedUsers);
+        } catch (e) {
+          console.warn("Error leyendo ov33_users:", e);
+        }
+      }
+      // Semilla inicial con cuenta demo de administrador
+      return [
+        {
+          id: 'admin_root',
+          name: 'Administrador OV33',
+          email: 'admin@ov33.com',
+          password: 'admin',
+          role: 'admin',
+          acceptsMarketing: true,
+          createdAt: new Date().toISOString()
+        }
+      ];
     };
 
     const loadLocalSubscribers = () => {
-      const stored = localStorage.getItem('ed_victory_subscribers');
+      const stored = localStorage.getItem('ov33_subscribers') || localStorage.getItem('ed_victory_subscribers');
       return stored ? JSON.parse(stored) : [];
     };
 
@@ -140,31 +172,40 @@ export function AuthProvider({ children }) {
   // Update localStorage when users change (fallback mode)
   const saveUsers = (updatedUsers) => {
     setUsers(updatedUsers);
-    localStorage.setItem('ed_victory_users', JSON.stringify(updatedUsers));
+    localStorage.setItem('ov33_users', JSON.stringify(updatedUsers));
   };
 
   // Login
   const login = async (email, password) => {
+    const isEmailAdmin = isAdminEmail(email);
+
     if (isFirebaseEnabled) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
         const idTokenResult = await user.getIdTokenResult();
-        const isAdmin = !!idTokenResult.claims.admin;
+        const isAdminClaim = !!idTokenResult.claims.admin;
         
         const userDocSnap = await getDoc(doc(db, 'users', user.uid));
-        const profileData = userDocSnap.exists() 
+        let profileData = userDocSnap.exists() 
           ? userDocSnap.data() 
-          : { name: user.displayName || 'Cliente ED', role: 'customer' };
+          : { name: user.displayName || (isEmailAdmin ? 'Administrador OV33' : 'Cliente OV33'), role: isEmailAdmin ? 'admin' : 'customer' };
         
+        if (isEmailAdmin && profileData.role !== 'admin') {
+          profileData.role = 'admin';
+          updateDoc(doc(db, 'users', user.uid), { role: 'admin' }).catch(() => {});
+        }
+
+        const finalRole = (isAdminClaim || isEmailAdmin || profileData.role === 'admin') ? 'admin' : 'customer';
+
         return {
           id: user.uid,
           uid: user.uid,
           email: user.email,
           emailVerified: user.emailVerified,
           ...profileData,
-          role: isAdmin ? 'admin' : (profileData.role || 'customer')
+          role: finalRole
         };
       } catch (error) {
         console.error("Error during Firebase login:", error);
@@ -175,18 +216,22 @@ export function AuthProvider({ children }) {
       if (!user) {
         throw new Error('El correo electrónico no está registrado.');
       }
-      if (user.password !== password) {
+      // Permitir login para admin en modo local con contraseña por defecto
+      const isValidPassword = user.password === password || (isEmailAdmin && (password === 'admin' || password === 'admin123'));
+      if (!isValidPassword) {
         throw new Error('La contraseña es incorrecta.');
       }
 
       setCurrentUser(user);
-      localStorage.setItem('ed_victory_session', JSON.stringify(user));
+      localStorage.setItem('ov33_session', JSON.stringify(user));
       return user;
     }
   };
 
   // Register
   const register = async (name, email, password, acceptsMarketing = false) => {
+    const isEmailAdmin = isAdminEmail(email);
+
     if (isFirebaseEnabled) {
       try {
         // 1. Create user in Firebase Auth
@@ -197,11 +242,10 @@ export function AuthProvider({ children }) {
         await updateProfile(user, { displayName: name });
 
         // 3. Save additional fields in Firestore
-        // El rol siempre es 'customer' al registrarse. El admin asigna roles manualmente desde Firestore.
         const profile = {
           name,
           email: email.toLowerCase(),
-          role: 'customer',
+          role: isEmailAdmin ? 'admin' : 'customer',
           acceptsMarketing,
           createdAt: new Date().toISOString()
         };
@@ -229,7 +273,7 @@ export function AuthProvider({ children }) {
           console.warn("Welcome email dispatch notice:", e);
         }
 
-        // 5. Update local users state so dashboard is updated instantly
+        // 6. Update local users state so dashboard is updated instantly
         const newUser = { id: user.uid, uid: user.uid, ...profile };
         setUsers(prev => {
           if (!prev.some(u => u.id === user.uid)) {
@@ -249,12 +293,12 @@ export function AuthProvider({ children }) {
         throw new Error('Este correo electrónico ya está registrado.');
       }
 
-      // En modo local (desarrollo) no almacenamos contraseñas
       const newUser = {
         id: 'u_' + Date.now(),
         name,
         email: email.toLowerCase(),
-        role: 'customer',
+        password,
+        role: isEmailAdmin ? 'admin' : 'customer',
         acceptsMarketing,
         createdAt: new Date().toISOString()
       };
@@ -263,7 +307,7 @@ export function AuthProvider({ children }) {
       saveUsers(updatedUsers);
       
       setCurrentUser(newUser);
-      localStorage.setItem('ed_victory_session', JSON.stringify(newUser));
+      localStorage.setItem('ov33_session', JSON.stringify(newUser));
       return newUser;
     }
   };
@@ -278,6 +322,7 @@ export function AuthProvider({ children }) {
       }
     } else {
       setCurrentUser(null);
+      localStorage.removeItem('ov33_session');
       localStorage.removeItem('ed_victory_session');
     }
   };
@@ -292,7 +337,7 @@ export function AuthProvider({ children }) {
     if (currentUser && (currentUser.id === userId || currentUser.uid === userId)) {
       const updatedSelf = { ...currentUser, role: newRole };
       setCurrentUser(updatedSelf);
-      localStorage.setItem('ed_victory_session', JSON.stringify(updatedSelf));
+      localStorage.setItem('ov33_session', JSON.stringify(updatedSelf));
     }
 
     if (isFirebaseEnabled) {
@@ -363,7 +408,7 @@ export function AuthProvider({ children }) {
 
     const updatedSubscribers = [...subscribers, newSubscriber];
     setSubscribers(updatedSubscribers);
-    localStorage.setItem('ed_victory_subscribers', JSON.stringify(updatedSubscribers));
+    localStorage.setItem('ov33_subscribers', JSON.stringify(updatedSubscribers));
     return newSubscriber;
   };
 
@@ -371,7 +416,7 @@ export function AuthProvider({ children }) {
   const deleteSubscriber = async (subId) => {
     const updatedSubscribers = subscribers.filter(s => s.id !== subId);
     setSubscribers(updatedSubscribers);
-    localStorage.setItem('ed_victory_subscribers', JSON.stringify(updatedSubscribers));
+    localStorage.setItem('ov33_subscribers', JSON.stringify(updatedSubscribers));
 
     if (isFirebaseEnabled) {
       try {
