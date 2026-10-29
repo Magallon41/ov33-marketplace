@@ -41,9 +41,9 @@ export function Offers() {
         <div className="max-w-[1440px] mx-auto px-4 md:px-8">
           
           {/* Banner de Ofertas Relámpago */}
-          <div className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-3xl p-6 sm:p-10 text-white shadow-xl mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-3xl p-6 sm:p-10 text-white shadow-xl shadow-red-500/10 mb-8 relative overflow-hidden border border-amber-300/30">
             <div className="relative z-10 max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3 text-amber-300">
+              <div className="inline-flex items-center gap-1.5 bg-black/35 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3 text-amber-300 border border-white/10">
                 <span>🔥</span>
                 <span>ZONA DE LIQUIDACIÓN Y FLASH DEALS</span>
               </div>
@@ -77,8 +77,8 @@ export function Offers() {
               onClick={() => setSelectedBrand('TODAS')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 selectedBrand === 'TODAS'
-                  ? 'bg-orange-500 text-white shadow-md'
-                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                  ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md shadow-red-500/20'
+                  : 'bg-white dark:bg-[#0B131F] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#C5A869]/25 hover:border-[#C5A869]/50'
               }`}
             >
               Todas las marcas ({saleProducts.length})
@@ -86,14 +86,15 @@ export function Offers() {
             {brands.map(b => {
               const count = saleProducts.filter(p => (p.brand || '').toLowerCase() === b.name.toLowerCase()).length;
               if (count === 0) return null;
+              const isSelected = selectedBrand === b.name;
               return (
                 <button
                   key={b.id || b.name}
                   onClick={() => setSelectedBrand(b.name)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                    selectedBrand === b.name
-                      ? 'bg-orange-500 text-white shadow-md'
-                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    isSelected
+                      ? 'bg-[#0B131F] text-[#DFBE78] border border-[#C5A869]/60 shadow-md'
+                      : 'bg-white dark:bg-[#0B131F] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#C5A869]/25 hover:border-[#C5A869]/50'
                   }`}
                 >
                   {b.name} ({count})

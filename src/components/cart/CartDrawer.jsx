@@ -36,10 +36,10 @@ export function CartDrawer() {
       />
       
       {/* Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-full max-w-[450px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed top-0 right-0 h-full w-full max-w-[450px] bg-white dark:bg-[#070D17] text-slate-800 dark:text-slate-100 z-[70] shadow-2xl transform transition-transform duration-300 flex flex-col border-l border-slate-200 dark:border-[#C5A869]/25 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-[#C5A869]/20 flex justify-between items-center bg-slate-50/60 dark:bg-[#0B131F]">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-orange-500 text-[22px]">shopping_cart</span>
             <h2 className="text-sm font-black uppercase tracking-wider">
@@ -114,7 +114,7 @@ export function CartDrawer() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start gap-1">
-                        <span className="text-[10px] font-black uppercase text-orange-600 tracking-wider">
+                        <span className="text-[10px] font-black uppercase text-orange-600 dark:text-[#DFBE78] tracking-wider">
                           {item.brand || 'OV33'}
                         </span>
                         <button
@@ -164,7 +164,7 @@ export function CartDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80">
+          <div className="p-6 border-t border-slate-200 dark:border-[#C5A869]/20 bg-slate-50 dark:bg-[#0B131F]">
             <div className="flex justify-between items-center mb-1">
               <span className="text-xs font-bold text-slate-500">Subtotal</span>
               <span className="text-xl font-black text-slate-900 dark:text-white">

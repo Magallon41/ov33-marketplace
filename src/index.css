@@ -1,16 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Marketplace Core Palette ── */
+  /* ── Marketplace Core Vibrant Hooks (Rojos, Naranjas y Amarillos para conversión) ── */
   --color-brand-orange: #ff5000;
   --color-brand-orange-hover: #e04700;
   --color-brand-orange-light: #fff7ed;
   --color-brand-red: #ef4444;
   --color-brand-red-dark: #dc2626;
   --color-brand-yellow: #f59e0b;
+  --color-brand-yellow-light: #fef3c7;
   --color-brand-emerald: #10b981;
   --color-brand-blue: #2563eb;
-  --color-brand-dark: #0f172a;
+
+  /* ── ED Victory Logo Infused Palette (Midnight Obsidian & Champagne Gold) ── */
+  --color-brand-navy: #0b131f;
+  --color-brand-navy-dark: #070d17;
+  --color-brand-navy-card: #101a2b;
+  --color-brand-navy-surface: #142135;
+  --color-brand-navy-border: rgba(197, 168, 105, 0.22);
+
+  --color-brand-gold: #c5a869;
+  --color-brand-gold-light: #dfbe78;
+  --color-brand-gold-dark: #9a7b38;
+  --color-brand-gold-glow: #e5c98a;
+  --color-brand-gold-subtle: rgba(197, 168, 105, 0.12);
+  --color-brand-gold-border: rgba(197, 168, 105, 0.35);
 
   /* ── UI Surfaces ── */
   --color-surface-card: #ffffff;
@@ -48,7 +62,7 @@
   scrollbar-width: none;
 }
 
-/* Animations */
+/* Animations & Visual Effects */
 @keyframes pulseSubtle {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.05); opacity: 0.9; }
@@ -67,4 +81,31 @@
   background: linear-gradient(90deg, #ff5000 0%, #ff7a00 50%, #ff5000 100%);
   background-size: 200% 200%;
   animation: flashBadge 3s infinite linear;
+}
+
+/* ── ED Victory Logo Infused Utility Gradients ── */
+.bg-gradient-gold {
+  background: linear-gradient(135deg, #dfbe78 0%, #c5a869 50%, #9a7b38 100%);
+}
+
+.bg-gradient-gold-warm {
+  background: linear-gradient(135deg, #f59e0b 0%, #dfbe78 50%, #c5a869 100%);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #dfbe78 0%, #c5a869 50%, #9a7b38 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-navy-gold {
+  background: linear-gradient(135deg, #070d17 0%, #0b131f 65%, #142032 100%);
+}
+
+.border-gold-subtle {
+  border-color: rgba(197, 168, 105, 0.32);
+}
+
+.shadow-gold-subtle {
+  box-shadow: 0 4px 20px -2px rgba(197, 168, 105, 0.22);
 }

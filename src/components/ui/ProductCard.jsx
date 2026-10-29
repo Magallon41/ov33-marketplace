@@ -43,9 +43,9 @@ export function ProductCard({ product, compact = false }) {
   };
 
   return (
-    <div className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 hover:border-orange-300 dark:hover:border-orange-500/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden h-full">
+    <div className="group relative bg-white dark:bg-[#0B131F] rounded-2xl border border-slate-200/80 dark:border-[#C5A869]/20 hover:border-[#C5A869]/60 dark:hover:border-[#DFBE78]/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden h-full">
       {/* Imagen & Badges */}
-      <div className="relative aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800/50">
+      <div className="relative aspect-square w-full overflow-hidden bg-slate-100 dark:bg-[#070D17]">
         <Link to={`/product/${product.id}`} className="block w-full h-full">
           <img
             src={product.image}
@@ -55,7 +55,7 @@ export function ProductCard({ product, compact = false }) {
           />
         </Link>
 
-        {/* Badges superiores */}
+        {/* Badges superiores — Llamativos Rojos, Amarillos y detalles Oro */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
           {discount > 0 && (
             <span className="bg-gradient-to-r from-red-600 to-orange-600 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-md shadow-md tracking-tight">
@@ -63,12 +63,12 @@ export function ProductCard({ product, compact = false }) {
             </span>
           )}
           {product.isFlashDeal && (
-            <span className="bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1 tracking-tight">
+            <span className="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1 tracking-tight border border-amber-300">
               <span>⚡</span> FLASH
             </span>
           )}
           {product.badge && !product.isFlashDeal && (
-            <span className="bg-slate-900/85 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-md shadow-sm">
+            <span className="bg-[#070D17]/90 backdrop-blur-xs text-[#DFBE78] border border-[#C5A869]/30 text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
               {product.badge}
             </span>
           )}
@@ -78,7 +78,7 @@ export function ProductCard({ product, compact = false }) {
         <button
           onClick={toggleWishlist}
           aria-label="Guardar en favoritos"
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs text-slate-400 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 flex items-center justify-center shadow-md transition-transform duration-200 active:scale-90 cursor-pointer z-10"
+          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 dark:bg-[#0B131F]/90 backdrop-blur-xs text-slate-400 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 flex items-center justify-center shadow-md transition-transform duration-200 active:scale-90 cursor-pointer z-10 border border-slate-200/50 dark:border-[#C5A869]/30"
         >
           <span className={`material-symbols-outlined text-[18px] ${isWishlisted ? 'text-red-500 fill-1' : ''}`} style={isWishlisted ? { fontVariationSettings: "'FILL' 1" } : {}}>
             favorite
@@ -93,7 +93,7 @@ export function ProductCard({ product, compact = false }) {
             className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all duration-200 cursor-pointer ${
               isAdded 
                 ? 'bg-emerald-600 text-white' 
-                : 'bg-orange-500 hover:bg-orange-600 text-white active:scale-98'
+                : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white active:scale-98 shadow-orange-500/20'
             }`}
           >
             <span className="material-symbols-outlined text-[18px]">
@@ -109,9 +109,9 @@ export function ProductCard({ product, compact = false }) {
         <div>
           {/* Marca & Envío Gratis */}
           <div className="flex items-center justify-between gap-1 mb-1">
-            <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1">
               <span>{product.brand || 'OV33'}</span>
-              <span className="material-symbols-outlined text-[12px] text-blue-500 font-bold" title="Marca Verificada">
+              <span className="material-symbols-outlined text-[13px] text-[#C5A869] font-bold" title="Marca Oficial Verificada">
                 verified
               </span>
             </span>
@@ -132,7 +132,7 @@ export function ProductCard({ product, compact = false }) {
 
           {/* Calificación y ventas (Social Proof) */}
           <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-            <div className="flex items-center text-amber-500 font-bold gap-0.5">
+            <div className="flex items-center text-[#DFBE78] font-bold gap-0.5">
               <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                 star
               </span>
@@ -165,7 +165,7 @@ export function ProductCard({ product, compact = false }) {
             className={`sm:hidden mt-2 w-full py-1.5 px-2 rounded-lg font-bold text-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer ${
               isAdded 
                 ? 'bg-emerald-600 text-white' 
-                : 'bg-orange-500 hover:bg-orange-600 text-white'
+                : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">

@@ -35,36 +35,42 @@ export function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  // Slider de banners automáticos
+  // Slider de banners automáticos con integración de paleta Midnight Obsidian & Champagne Gold
   const heroBanners = [
     {
       id: 1,
-      badge: "FESTIVAL DE MARCAS",
-      title: "Hasta 50% OFF en Marcas Oficiales",
-      subtitle: "Apple, Nike, Xiaomi, Sony, Stanley y más con Envío Gratis Inmediato.",
-      cta: "Explorar Ofertas",
-      link: "/catalog?offers=true",
-      bgGradient: "from-orange-600 via-amber-600 to-red-600",
+      badge: "✦ GRAN FESTIVAL MULTIMARCA",
+      title: "Marcas Oficiales, Precios Irresistibles",
+      subtitle: "Descubre Apple, Nike, Xiaomi, Casio, Stanley y las mejores marcas con Envío Gratis.",
+      cta: "Explorar Marcas",
+      link: "/catalog?filter=brands",
+      bgOverlay: "from-[#070D17]/95 via-[#0B131F]/80 to-transparent",
+      badgeStyle: "bg-[#C5A869]/20 text-[#DFBE78] border border-[#C5A869]/40 font-black",
+      ctaStyle: "bg-gradient-to-r from-orange-500 via-amber-500 to-[#C5A869] hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30",
       image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&auto=format&fit=crop&q=80"
     },
     {
       id: 2,
-      badge: "SUPER FLASH DEALS",
-      title: "Tecnología & Gadgets en Liquidación",
+      badge: "🔥 SUPER FLASH DEALS",
+      title: "Hasta 50% OFF en Liquidación",
       subtitle: "Smartwatches, audífonos Noise Cancelling, bocinas y accesorios al mejor precio.",
-      cta: "Ver Gadgets",
-      link: "/catalog?category=Tecnología %26 Gadgets",
-      bgGradient: "from-blue-700 via-indigo-700 to-slate-900",
+      cta: "Ver Ofertas Flash",
+      link: "/ofertas",
+      bgOverlay: "from-red-950/95 via-red-900/70 to-transparent",
+      badgeStyle: "bg-yellow-400 text-red-950 font-black",
+      ctaStyle: "bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white shadow-red-500/30",
       image: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=1000&auto=format&fit=crop&q=80"
     },
     {
       id: 3,
-      badge: "TENDENCIAS GLOBALES",
-      title: "Sneakers & Moda Urbana",
+      badge: "SNEAKERS & STREETWEAR",
+      title: "Tendencias Urbanas & Calzado",
       subtitle: "Nike Air Max, hoodies oversize y jeans Levi's listos para entrega express.",
       cta: "Ver Sneakers",
       link: "/catalog?category=Moda %26 Sneakers",
-      bgGradient: "from-emerald-700 via-teal-800 to-slate-900",
+      bgOverlay: "from-[#0B131F]/90 via-slate-900/70 to-transparent",
+      badgeStyle: "bg-[#DFBE78]/20 text-[#DFBE78] border border-[#C5A869]/40",
+      ctaStyle: "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30",
       image: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1000&auto=format&fit=crop&q=80"
     }
   ];
@@ -97,12 +103,12 @@ export function Home() {
   });
 
   const quickCategories = [
-    { name: "Tecnología", icon: "devices", query: "Tecnología & Gadgets", color: "from-blue-500 to-cyan-500" },
+    { name: "Tecnología", icon: "devices", query: "Tecnología & Gadgets", color: "from-blue-600 to-indigo-600" },
     { name: "Sneakers & Moda", icon: "apparel", query: "Moda & Sneakers", color: "from-orange-500 to-amber-500" },
-    { name: "Relojes", icon: "watch", query: "Relojes & Accesorios", color: "from-purple-500 to-pink-500" },
-    { name: "Hogar & Termos", icon: "home", query: "Hogar & Estilo de Vida", color: "from-emerald-500 to-teal-500" },
-    { name: "Ofertas Flash", icon: "local_fire_department", query: "offers", isSpecial: true, color: "from-red-500 to-rose-600" },
-    { name: "Marcas Top", icon: "verified", query: "brands", color: "from-slate-700 to-slate-900" }
+    { name: "Relojes & Lujo", icon: "watch", query: "Relojes & Accesorios", color: "from-[#9A7B38] via-[#C5A869] to-[#DFBE78]" },
+    { name: "Hogar & Termos", icon: "home", query: "Hogar & Estilo de Vida", color: "from-emerald-600 to-teal-600" },
+    { name: "Ofertas Flash", icon: "local_fire_department", query: "offers", isSpecial: true, color: "from-red-600 via-orange-600 to-rose-600" },
+    { name: "Marcas Oficiales", icon: "verified", query: "brands", color: "from-[#070D17] to-[#142135] ring-1 ring-[#C5A869]/40" }
   ];
 
   return (
@@ -134,9 +140,9 @@ export function Home() {
                     alt={banner.title}
                     className="w-full h-full object-cover object-center"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent flex items-center p-6 sm:p-12">
+                  <div className={`absolute inset-0 bg-gradient-to-r ${banner.bgOverlay || 'from-[#070D17]/90 via-[#0B131F]/70 to-transparent'} flex items-center p-6 sm:p-12`}>
                     <div className="max-w-lg text-white">
-                      <span className="inline-block bg-orange-500 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 shadow-md">
+                      <span className={`inline-block text-[11px] px-3 py-1 rounded-full uppercase tracking-wider mb-3 shadow-md ${banner.badgeStyle || 'bg-orange-500 text-white font-black'}`}>
                         {banner.badge}
                       </span>
                       <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight mb-3">
@@ -147,7 +153,7 @@ export function Home() {
                       </p>
                       <Link
                         to={banner.link}
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs sm:text-sm px-6 py-3.5 rounded-full shadow-lg shadow-orange-500/30 transition-all active:scale-95"
+                        className={`inline-flex items-center gap-2 font-black text-xs sm:text-sm px-6 py-3.5 rounded-full shadow-lg transition-all active:scale-95 ${banner.ctaStyle || 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/30'}`}
                       >
                         <span>{banner.cta}</span>
                         <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -164,7 +170,7 @@ export function Home() {
                     key={i}
                     onClick={() => setCurrentSlide(i)}
                     className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                      i === currentSlide ? 'w-8 bg-orange-500' : 'w-2.5 bg-white/50 hover:bg-white'
+                      i === currentSlide ? 'w-8 bg-gradient-to-r from-orange-500 to-[#C5A869]' : 'w-2.5 bg-white/50 hover:bg-white'
                     }`}
                     aria-label={`Ir al slide ${i + 1}`}
                   />
@@ -175,8 +181,8 @@ export function Home() {
             {/* Tarjetas laterales de Cupones y Garantías (Estilo Marketplace) */}
             <div className="flex flex-col gap-4">
               
-              {/* Card 1: Cupón de Bienvenida */}
-              <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-5 text-white shadow-md flex flex-col justify-between relative overflow-hidden flex-1">
+              {/* Card 1: Cupón de Bienvenida — Fuego Naranja / Ámbar */}
+              <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-5 text-white shadow-md flex flex-col justify-between relative overflow-hidden flex-1 border border-amber-300/30">
                 <div className="relative z-10">
                   <span className="text-[10px] font-black tracking-wider uppercase bg-white/20 px-2 py-0.5 rounded-md">
                     CUPÓN BIENVENIDA
@@ -204,26 +210,27 @@ export function Home() {
                 <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
               </div>
 
-              {/* Card 2: Compra Segura y Envío Rápido */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm flex flex-col justify-between flex-1">
-                <div>
+              {/* Card 2: Compra Segura y Garantía — Midnight Obsidian & Champagne Gold */}
+              <div className="bg-[#070D17] border border-[#C5A869]/35 rounded-3xl p-5 shadow-sm flex flex-col justify-between flex-1 relative overflow-hidden">
+                <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center">
+                    <span className="w-8 h-8 rounded-full bg-[#C5A869]/15 border border-[#C5A869]/40 text-[#DFBE78] flex items-center justify-center">
                       <span className="material-symbols-outlined text-[18px]">verified</span>
                     </span>
-                    <h4 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
-                      Garantía OV33
+                    <h4 className="text-xs font-black text-[#DFBE78] uppercase tracking-wider">
+                      Garantía Oficial OV33
                     </h4>
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Artículos verificados de marcas originales con cotización de envío en tiempo real vía Envia.com.
+                  <p className="text-xs text-slate-300">
+                    Artículos 100% auténticos de marcas oficiales con cotización de envío en tiempo real vía Envia.com.
                   </p>
                 </div>
 
-                <div className="mt-4 flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400">
-                  <span className="material-symbols-outlined text-[16px]">local_shipping</span>
+                <div className="mt-4 pt-3 border-t border-slate-800 flex items-center gap-2 text-xs font-bold text-[#DFBE78] relative z-10">
+                  <span className="material-symbols-outlined text-[16px] text-[#C5A869]">local_shipping</span>
                   <span>Envío Gratis desde $499 MXN</span>
                 </div>
+                <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-[#C5A869]/5 rounded-full blur-xl pointer-events-none" />
               </div>
 
             </div>
@@ -233,12 +240,13 @@ export function Home() {
 
         {/* ── 2. BURBUJAS DE CATEGORÍA RÁPIDAS (TEMU / SHEIN Category Icons) ── */}
         <section className="max-w-[1440px] mx-auto px-4 md:px-8 mb-10">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+          <div className="bg-white dark:bg-[#0B131F] rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-[#C5A869]/25 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                Explorar Departamentos
+              <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#C5A869]"></span>
+                <span>Explorar Departamentos</span>
               </h3>
-              <Link to="/catalog" className="text-xs font-bold text-orange-600 hover:underline">
+              <Link to="/catalog" className="text-xs font-bold text-orange-600 dark:text-[#DFBE78] hover:underline">
                 Ver todos →
               </Link>
             </div>
@@ -252,14 +260,14 @@ export function Home() {
                     else if (cat.query === 'brands') navigate('/catalog?filter=brands');
                     else navigate(`/catalog?category=${encodeURIComponent(cat.query)}`);
                   }}
-                  className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all group cursor-pointer text-center"
+                  className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-[#142135] transition-all group cursor-pointer text-center"
                 >
                   <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr ${cat.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                     <span className="material-symbols-outlined text-[28px] sm:text-[32px]">
                       {cat.icon}
                     </span>
                   </div>
-                  <span className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-orange-600 transition-colors leading-tight">
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-orange-600 dark:group-hover:text-[#DFBE78] transition-colors leading-tight">
                     {cat.name}
                   </span>
                 </button>
@@ -270,7 +278,7 @@ export function Home() {
 
         {/* ── 3. OFERTAS RELÁMPAGO (FLASH DEALS CON CRONÓMETRO) ── */}
         <section className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
-          <div className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl">
+          <div className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-3xl p-5 sm:p-7 text-white shadow-xl border border-amber-300/30">
             
             {/* Header de Ofertas Relámpago con Contador */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/20">
@@ -283,7 +291,7 @@ export function Home() {
                     <h2 className="text-xl sm:text-2xl font-black tracking-tight">
                       OFERTAS RELÁMPAGO
                     </h2>
-                    <span className="bg-white text-red-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                    <span className="bg-white text-red-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase shadow-xs">
                       FLASH
                     </span>
                   </div>
@@ -326,7 +334,7 @@ export function Home() {
             <div className="mt-6 text-center">
               <Link
                 to="/ofertas"
-                className="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-orange-50 font-black text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md transition-all active:scale-95"
+                className="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-amber-50 font-black text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md transition-all active:scale-95"
               >
                 <span>Ver Todas las Ofertas Flash</span>
                 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -341,7 +349,7 @@ export function Home() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-blue-500 text-[24px]">verified</span>
+                <span className="material-symbols-outlined text-[#C5A869] text-[24px]">verified</span>
                 <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
                   Marcas Oficiales en OV33
                 </h3>
@@ -353,7 +361,7 @@ export function Home() {
 
             <Link
               to="/catalog"
-              className="text-xs font-bold text-orange-600 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-orange-600 dark:text-[#DFBE78] hover:underline flex items-center gap-1"
             >
               <span>Ver todas las marcas</span>
               <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -365,13 +373,13 @@ export function Home() {
               <button
                 key={brand.id || brand.name}
                 onClick={() => navigate(`/catalog?brand=${encodeURIComponent(brand.name)}`)}
-                className="group bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-orange-500 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md cursor-pointer text-center"
+                className="group bg-white dark:bg-[#0B131F] border border-slate-200/80 dark:border-[#C5A869]/20 hover:border-[#C5A869] dark:hover:border-[#DFBE78] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-all hover:shadow-md hover:shadow-[#C5A869]/10 cursor-pointer text-center"
               >
-                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-900 dark:text-white font-black text-lg group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#142135] border border-transparent dark:border-[#C5A869]/20 flex items-center justify-center text-slate-900 dark:text-[#DFBE78] font-black text-lg group-hover:scale-110 transition-transform">
                   {brand.name.charAt(0)}
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-xs text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                  <h4 className="font-extrabold text-xs text-slate-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-[#DFBE78] transition-colors">
                     {brand.name}
                   </h4>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -385,13 +393,14 @@ export function Home() {
 
         {/* ── 5. SECCIÓN "LO MÁS VENDIDO" (Top Sellers Ranking #1, #2, #3, #4) ── */}
         <section className="max-w-[1440px] mx-auto px-4 md:px-8 mb-12">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+          <div className="bg-white dark:bg-[#0B131F] rounded-3xl p-6 border border-slate-200/80 dark:border-[#C5A869]/25 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">⭐</span>
+                <span className="text-2xl text-[#DFBE78]">⭐</span>
                 <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                    Lo Más Vendido de la Semana
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                    <span>Lo Más Vendido de la Semana</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#C5A869]/15 text-[#DFBE78] border border-[#C5A869]/30 uppercase">Top Ranking</span>
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Los productos con mayor número de pedidos y mejores reseñas.
@@ -403,7 +412,7 @@ export function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {bestSellerProducts.map((prod, idx) => (
                 <div key={prod.id} className="relative">
-                  <div className="absolute top-2 left-2 z-20 w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 font-black text-xs flex items-center justify-center shadow-md">
+                  <div className="absolute top-2 left-2 z-20 w-7 h-7 rounded-full bg-gradient-to-tr from-[#9A7B38] via-[#C5A869] to-[#DFBE78] text-slate-950 font-black text-xs flex items-center justify-center shadow-md border border-white/40">
                     #{idx + 1}
                   </div>
                   <ProductCard product={prod} />
@@ -433,19 +442,26 @@ export function Home() {
                 { id: 'Tecnología & Gadgets', label: '🎧 Tecnología' },
                 { id: 'Moda & Sneakers', label: '👟 Moda' },
                 { id: 'UNDER_1000', label: '🏷️ Menos de $1,000' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+              ].map(tab => {
+                const isActive = activeTab === tab.id;
+                let activeClass = 'bg-[#0B131F] text-[#DFBE78] border border-[#C5A869]/60 shadow-sm';
+                if (tab.id === 'OFERTAS' && isActive) {
+                  activeClass = 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md shadow-red-500/20';
+                }
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      isActive
+                        ? activeClass
+                        : 'bg-white dark:bg-[#0B131F] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-[#C5A869]/40 hover:bg-slate-50 dark:hover:bg-[#142135]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -460,7 +476,7 @@ export function Home() {
           <div className="mt-10 text-center">
             <Link
               to="/catalog"
-              className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-orange-600 dark:hover:bg-orange-400 dark:hover:text-white font-black text-xs sm:text-sm px-8 py-3.5 rounded-full shadow-lg transition-all active:scale-95"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#070D17] to-[#142135] text-[#DFBE78] border border-[#C5A869]/40 hover:border-[#C5A869] hover:shadow-lg hover:shadow-[#C5A869]/20 font-black text-xs sm:text-sm px-8 py-3.5 rounded-full shadow-lg transition-all active:scale-95"
             >
               <span>Explorar Catálogo Completo ({products.length} productos)</span>
               <span className="material-symbols-outlined text-[18px]">storefront</span>

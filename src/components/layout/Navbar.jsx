@@ -79,32 +79,32 @@ export function Navbar() {
         </div>
       )}
 
-      <header className={`bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 fixed w-full z-50 border-b border-slate-200 dark:border-slate-800 shadow-xs transition-all duration-300 ${headerTopClass}`}>
+      <header className={`bg-white dark:bg-[#0B131F] text-slate-800 dark:text-slate-100 fixed w-full z-50 border-b border-slate-200 dark:border-[#C5A869]/20 shadow-xs transition-all duration-300 ${headerTopClass}`}>
         
-        {/* Barra superior de anuncios y beneficios (Marketplace Top Bar) */}
-        <div className="bg-slate-950 text-slate-300 text-[11px] py-1.5 px-4 md:px-8 border-b border-slate-800">
+        {/* Barra superior de anuncios y beneficios (Marketplace Top Bar — Midnight & Gold with Red/Orange Accent) */}
+        <div className="bg-[#070D17] text-slate-300 text-[11px] py-1.5 px-4 md:px-8 border-b border-[#C5A869]/25">
           <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
             <div className="flex items-center gap-2 font-medium">
-              <span className="bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide">
+              <span className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shadow-xs">
                 GRATIS
               </span>
               <span>¡Envío GRATIS a todo México en compras mayores a $499 MXN!</span>
-              <span className="hidden md:inline text-slate-500">•</span>
-              <span className="hidden md:inline text-amber-400 font-semibold">Cupón nuevo usuario: OV33BIENVENIDO</span>
+              <span className="hidden md:inline text-[#C5A869]/40">•</span>
+              <span className="hidden md:inline text-[#DFBE78] font-bold">Cupón nuevo usuario: OV33BIENVENIDO</span>
             </div>
 
             <div className="hidden sm:flex items-center gap-4 text-slate-400">
-              <Link to="/tracking" className="hover:text-white flex items-center gap-1 transition-colors">
-                <span className="material-symbols-outlined text-[14px]">local_shipping</span>
+              <Link to="/tracking" className="hover:text-[#DFBE78] flex items-center gap-1 transition-colors">
+                <span className="material-symbols-outlined text-[14px] text-[#C5A869]">local_shipping</span>
                 <span>Rastrear Pedido</span>
               </Link>
-              <Link to="/about" className="hover:text-white flex items-center gap-1 transition-colors">
+              <Link to="/about" className="hover:text-[#DFBE78] flex items-center gap-1 transition-colors">
                 <span className="material-symbols-outlined text-[14px]">help_outline</span>
                 <span>Centro de Ayuda</span>
               </Link>
-              <div className="flex items-center gap-1 text-slate-300 font-semibold">
+              <div className="flex items-center gap-1 text-slate-300 font-semibold border-l border-slate-800 pl-3">
                 <span>🇲🇽</span>
-                <span>MXN ($)</span>
+                <span className="text-[#DFBE78]">MXN ($)</span>
               </div>
             </div>
           </div>
@@ -124,14 +124,15 @@ export function Navbar() {
             </button>
 
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-xl md:text-2xl px-2.5 py-1 rounded-xl shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-                OV33
+              <div className="relative bg-gradient-to-r from-red-600 via-orange-500 to-[#C5A869] text-white font-black text-xl md:text-2xl px-2.5 py-1 rounded-xl shadow-md shadow-orange-500/25 border border-[#DFBE78]/40 group-hover:scale-105 transition-transform flex items-center gap-1">
+                <span>OV33</span>
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                <span className="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
                   MARKET
+                  <span className="text-[#C5A869] text-[10px]">✦</span>
                 </span>
-                <span className="text-[9px] font-bold text-orange-600 dark:text-orange-400 tracking-wider uppercase">
+                <span className="text-[9px] font-black text-[#C5A869] dark:text-[#DFBE78] tracking-widest uppercase">
                   Multimarca Oficial
                 </span>
               </div>
@@ -141,13 +142,13 @@ export function Navbar() {
           {/* Mega Barra de Búsqueda estilo TEMU / AliExpress (Desktop & Tablet) */}
           <div className="hidden sm:flex flex-1 max-w-2xl mx-auto flex-col">
             <form onSubmit={handleSearchSubmit} className="relative flex items-center w-full">
-              <div className="flex items-center w-full bg-slate-100 dark:bg-slate-800 rounded-full border-2 border-orange-500/80 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 shadow-xs overflow-hidden transition-all">
+              <div className="flex items-center w-full bg-slate-100 dark:bg-[#070D17] rounded-full border-2 border-orange-500/80 focus-within:border-[#C5A869] focus-within:ring-2 focus-within:ring-[#C5A869]/20 shadow-xs overflow-hidden transition-all">
                 
                 {/* Selector de Categoría integrado */}
                 <select
                   value={selectedSearchCat}
                   onChange={(e) => setSelectedSearchCat(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-600 dark:text-slate-300 py-2.5 pl-3.5 pr-2 outline-none border-r border-slate-200 dark:border-slate-700 cursor-pointer hidden md:block"
+                  className="bg-transparent text-xs font-semibold text-slate-600 dark:text-slate-300 py-2.5 pl-3.5 pr-2 outline-none border-r border-slate-200 dark:border-slate-800 cursor-pointer hidden md:block"
                 >
                   <option value="TODAS">Todas las categorías</option>
                   {categoryTree.map((cat) => (
@@ -160,16 +161,16 @@ export function Navbar() {
                 {/* Input de búsqueda */}
                 <input
                   type="text"
-                  placeholder="Busca por marca (Nike, Apple, Casio...), modelo o producto..."
+                  placeholder="Busca por marca (Nike, Apple, Casio, Levi's...), modelo o producto..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 py-2.5 px-4 text-xs md:text-sm bg-transparent outline-none text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                 />
 
-                {/* Botón buscar */}
+                {/* Botón buscar (Llamativo Naranja-Ámbar-Oro) */}
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 flex items-center justify-center font-bold text-xs gap-1.5 transition-all cursor-pointer active:scale-95"
+                  className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 flex items-center justify-center font-bold text-xs gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <span className="material-symbols-outlined text-[18px]">search</span>
                   <span className="hidden lg:inline">Buscar</span>
@@ -186,7 +187,7 @@ export function Navbar() {
                     key={tag}
                     type="button"
                     onClick={() => handleQuickTagClick(tag)}
-                    className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors cursor-pointer"
+                    className="hover:text-[#C5A869] dark:hover:text-[#DFBE78] transition-colors cursor-pointer"
                   >
                     {tag}
                   </button>
@@ -224,10 +225,10 @@ export function Navbar() {
                 className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-slate-700 dark:text-slate-200"
                 aria-label="Mi Cuenta"
               >
-                <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 font-bold text-xs relative">
+                <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-[#142135] border border-slate-300 dark:border-[#C5A869]/30 flex items-center justify-center text-slate-700 dark:text-[#DFBE78] font-bold text-xs relative">
                   <span className="material-symbols-outlined text-[20px]">person</span>
                   {currentUser && (
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-slate-900" />
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-[#0B131F]" />
                   )}
                 </div>
                 <div className="hidden lg:flex flex-col text-left leading-tight">
@@ -244,15 +245,20 @@ export function Navbar() {
               {showDropdown && currentUser && (
                 <>
                   <div className="fixed inset-0 z-20" onClick={() => setShowDropdown(false)} />
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-30 animate-in fade-in zoom-in-95">
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-700">
-                      <p className="font-bold text-sm text-slate-900 dark:text-white truncate">{currentUser.name}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{currentUser.email}</p>
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#0E1726] rounded-2xl shadow-xl border border-slate-200 dark:border-[#C5A869]/30 py-2 z-30 animate-in fade-in zoom-in-95">
+                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-[#070D17] rounded-t-2xl">
+                      <p className="font-bold text-sm text-white truncate flex items-center gap-1.5">
+                        <span>{currentUser.name}</span>
+                        {currentUser.role === 'admin' && (
+                          <span className="text-[9px] bg-amber-500/20 text-[#DFBE78] px-1.5 py-0.2 rounded border border-[#C5A869]/40 font-black">ADMIN</span>
+                        )}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate">{currentUser.email}</p>
                     </div>
                     <Link
                       to="/account"
                       onClick={() => setShowDropdown(false)}
-                      className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2.5 transition-colors"
+                      className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2.5 transition-colors"
                     >
                       <span className="material-symbols-outlined text-[18px] text-orange-500">account_circle</span>
                       Mi Perfil y Pedidos
@@ -260,7 +266,7 @@ export function Navbar() {
                     <Link
                       to="/tracking"
                       onClick={() => setShowDropdown(false)}
-                      className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2.5 transition-colors"
+                      className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2.5 transition-colors"
                     >
                       <span className="material-symbols-outlined text-[18px] text-blue-500">local_shipping</span>
                       Rastrear Envío
@@ -269,15 +275,15 @@ export function Navbar() {
                       <Link
                         to="/admin"
                         onClick={() => setShowDropdown(false)}
-                        className="px-4 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center gap-2.5 transition-colors"
+                        className="px-4 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-600 dark:text-[#DFBE78] text-xs font-bold flex items-center gap-2.5 transition-colors"
                       >
-                        <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                        <span className="material-symbols-outlined text-[18px] text-[#C5A869]">admin_panel_settings</span>
                         Panel de Administración
                       </Link>
                     )}
                     <button
                       onClick={handleLogoutClick}
-                      className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-2.5 border-t border-slate-100 dark:border-slate-700 mt-1 transition-colors cursor-pointer"
+                      className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-2.5 border-t border-slate-100 dark:border-slate-800 mt-1 transition-colors cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[18px]">logout</span>
                       Cerrar Sesión
@@ -287,16 +293,16 @@ export function Navbar() {
               )}
             </div>
 
-            {/* Carrito de Compras (Botón destacado estilo marketplace) */}
+            {/* Carrito de Compras (Botón destacado estilo marketplace con aro dorado) */}
             <button
               onClick={() => setIsOpen(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-3 sm:px-4 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-md shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-3 sm:px-4 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-md shadow-orange-500/25 border border-[#DFBE78]/30 active:scale-95 transition-all cursor-pointer"
               aria-label="Abrir Carrito"
             >
               <div className="relative flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-slate-950 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
+                  <span className="absolute -top-2 -right-2 bg-[#070D17] text-[#DFBE78] border border-[#C5A869]/60 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                     {totalItems}
                   </span>
                 )}
@@ -314,7 +320,7 @@ export function Navbar() {
               placeholder="Buscar marcas, productos, ofertas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full py-2 pl-4 pr-10 text-xs bg-slate-100 dark:bg-slate-800 rounded-full border border-orange-500/50 outline-none text-slate-900 dark:text-white"
+              className="w-full py-2 pl-4 pr-10 text-xs bg-slate-100 dark:bg-[#070D17] rounded-full border border-orange-500/50 outline-none text-slate-900 dark:text-white"
             />
             <button
               type="submit"
@@ -326,7 +332,7 @@ export function Navbar() {
         </div>
 
         {/* Cinta de Categorías y Ofertas (Ribbon Marketplace) */}
-        <nav className="border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold">
+        <nav className="border-t border-slate-200/80 dark:border-[#C5A869]/20 bg-white dark:bg-[#0B131F] text-xs font-semibold">
           <div className="max-w-[1440px] mx-auto px-4 md:px-8 flex items-center justify-between overflow-x-auto no-scrollbar py-2">
             
             <div className="flex items-center gap-1 md:gap-3 flex-nowrap">
@@ -334,20 +340,21 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setShowCategoriesMenu(!showCategoriesMenu)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-orange-50 dark:hover:bg-slate-700 rounded-lg text-slate-800 dark:text-slate-200 font-bold transition-colors cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0B131F] dark:bg-[#070D17] hover:bg-[#142135] text-white rounded-lg font-bold border border-[#C5A869]/30 transition-colors cursor-pointer whitespace-nowrap shadow-xs"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-orange-500">grid_view</span>
+                  <span className="material-symbols-outlined text-[18px] text-[#DFBE78]">grid_view</span>
                   <span>Todas las Categorías</span>
-                  <span className="material-symbols-outlined text-[14px]">expand_more</span>
+                  <span className="material-symbols-outlined text-[14px] text-[#C5A869]">expand_more</span>
                 </button>
 
                 {/* Dropdown de Categorías */}
                 {showCategoriesMenu && (
                   <>
                     <div className="fixed inset-0 z-20" onClick={() => setShowCategoriesMenu(false)} />
-                    <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 py-3 z-30">
-                      <p className="px-4 pb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-700">
-                        Departamentos OV33
+                    <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-[#0E1726] rounded-2xl shadow-2xl border border-slate-200 dark:border-[#C5A869]/30 py-3 z-30">
+                      <p className="px-4 pb-2 text-[11px] font-bold text-slate-400 dark:text-[#DFBE78] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <span>Departamentos OV33</span>
+                        <span className="text-[#C5A869] text-xs">★</span>
                       </p>
                       <div className="max-h-96 overflow-y-auto py-1">
                         {categoryTree.map((cat) => (
@@ -355,7 +362,7 @@ export function Navbar() {
                             key={cat.id || cat.name}
                             to={`/catalog?category=${encodeURIComponent(cat.name)}`}
                             onClick={() => setShowCategoriesMenu(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700 hover:text-orange-600 transition-colors"
+                            className="flex items-center justify-between px-4 py-2.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-[#142135] hover:text-orange-600 dark:hover:text-[#DFBE78] transition-colors"
                           >
                             <span className="font-semibold">{cat.name}</span>
                             <span className="text-[10px] text-slate-400">
@@ -364,11 +371,11 @@ export function Navbar() {
                           </Link>
                         ))}
                       </div>
-                      <div className="px-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+                      <div className="px-4 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <Link
                           to="/catalog"
                           onClick={() => setShowCategoriesMenu(false)}
-                          className="block text-center text-xs font-bold text-orange-600 hover:underline py-1"
+                          className="block text-center text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline py-1"
                         >
                           Ver Todo el Catálogo →
                         </Link>
@@ -378,30 +385,30 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Ofertas Flash */}
+              {/* Ofertas Flash — Mantener visual llamativo Rojo / Amarillo */}
               <NavLink
                 to="/ofertas"
                 className={({ isActive }) =>
-                  `flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap ${
+                  `flex items-center gap-1 px-2.5 py-1.5 rounded-lg font-black transition-all whitespace-nowrap border ${
                     isActive
-                      ? 'text-red-600 bg-red-50 dark:bg-red-950/60'
-                      : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40'
+                      ? 'text-red-600 bg-red-50 dark:bg-red-950/60 border-red-300 dark:border-red-800'
+                      : 'text-red-600 bg-red-50/60 dark:bg-red-950/30 hover:bg-red-100 border-red-200/60 dark:border-red-900/40'
                   }`
                 }
               >
                 <span className="text-base animate-pulse">🔥</span>
                 <span>Ofertas Flash</span>
-                <span className="bg-red-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase ml-1">
+                <span className="bg-gradient-to-r from-red-600 to-amber-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase ml-1 shadow-xs">
                   HOT
                 </span>
               </NavLink>
 
-              {/* Marcas Oficiales */}
+              {/* Marcas Oficiales — Integración con Oro Champán de ED Victory */}
               <NavLink
                 to="/catalog?filter=brands"
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:text-orange-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors whitespace-nowrap"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#C5A869]/10 hover:bg-[#C5A869]/20 text-slate-800 dark:text-[#DFBE78] border border-[#C5A869]/40 transition-colors whitespace-nowrap font-bold"
               >
-                <span className="material-symbols-outlined text-[16px] text-blue-500">verified</span>
+                <span className="material-symbols-outlined text-[16px] text-[#C5A869]">verified</span>
                 <span>Marcas Oficiales</span>
               </NavLink>
 
@@ -430,11 +437,11 @@ export function Navbar() {
               </NavLink>
             </div>
 
-            {/* Cupón rápido derecho */}
-            <div className="hidden lg:flex items-center gap-1.5 text-xs text-orange-600 font-bold bg-orange-50 dark:bg-orange-950/50 px-3 py-1 rounded-full border border-orange-200 dark:border-orange-800 whitespace-nowrap">
+            {/* Cupón rápido derecho — Con bordes y detalles en Oro Champán */}
+            <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-800 dark:text-[#DFBE78] font-bold bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-[#C5A869]/15 px-3 py-1 rounded-full border border-[#C5A869]/40 whitespace-nowrap">
               <span>🎟️</span>
               <span>10% OFF EXTRA con código:</span>
-              <span className="font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-orange-300 text-orange-700 font-black">
+              <span className="font-mono bg-[#070D17] text-[#DFBE78] px-1.5 py-0.5 rounded border border-[#C5A869]/50 font-black">
                 OV33NEW
               </span>
             </div>
@@ -449,15 +456,18 @@ export function Navbar() {
             className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-[70] lg:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="fixed top-0 left-0 h-full w-full max-w-[320px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 z-[80] shadow-2xl p-5 flex flex-col justify-between overflow-y-auto lg:hidden">
+          <div className="fixed top-0 left-0 h-full w-full max-w-[320px] bg-white dark:bg-[#0B131F] text-slate-800 dark:text-slate-100 z-[80] shadow-2xl p-5 flex flex-col justify-between overflow-y-auto lg:hidden border-r dark:border-[#C5A869]/20">
             <div>
               {/* Header del Drawer */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="bg-orange-500 text-white font-black text-xl px-2 py-0.5 rounded-lg">
+                  <div className="bg-gradient-to-r from-red-600 via-orange-500 to-[#C5A869] text-white font-black text-xl px-2 py-0.5 rounded-lg border border-[#DFBE78]/40 shadow-xs">
                     OV33
-                  </span>
-                  <span className="font-bold text-slate-900 dark:text-white">MARKET</span>
+                  </div>
+                  <div className="flex flex-col leading-none">
+                    <span className="font-bold text-slate-900 dark:text-white text-sm">MARKET</span>
+                    <span className="text-[8px] font-black text-[#C5A869] tracking-wider uppercase">Multimarca Oficial</span>
+                  </div>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}

@@ -183,32 +183,32 @@ ${data.notes ? `- *Notas:* ${data.notes}` : ''}
       <div className="bg-[#fcfbf9] text-neutral-900 min-h-screen pt-28 pb-20">
         
         {/* 1. Hero Section Editorial */}
-        <section className="relative bg-gradient-to-br from-neutral-950 via-neutral-900 to-black text-white py-24 md:py-32 px-6 lg:px-12 overflow-hidden">
+        <section className="relative bg-gradient-to-br from-[#070D17] via-[#0B131F] to-[#142135] text-white py-24 md:py-32 px-6 lg:px-12 overflow-hidden border-b border-[#C5A869]/25">
           <div className="absolute inset-0 z-0 opacity-20">
-            <div className="absolute inset-0 bg-[radial-gradient(#ff5000_1px,transparent_1px)] [background-size:24px_24px]"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#C5A869_1px,transparent_1px)] [background-size:24px_24px]"></div>
           </div>
 
           <div className="relative z-10 max-w-5xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#ff5000]/40 bg-[#ff5000]/15 text-[#ff5000] text-xs font-bold tracking-wider uppercase">
-              <span className="material-symbols-outlined text-[16px]">domain</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C5A869]/40 bg-[#C5A869]/10 text-[#DFBE78] text-xs font-bold tracking-wider uppercase">
+              <span className="material-symbols-outlined text-[16px] text-[#C5A869]">domain</span>
               Canal B2B & Distribución Multimarca Nacional
             </div>
 
             <h1 className="font-display-xl text-4xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight leading-tight text-white">
               Mayoreo & Surtido <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff5000] to-amber-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-400 to-[#DFBE78]">
                 para tu Tienda o Negocio
               </span>
             </h1>
 
-            <p className="font-body-lg text-neutral-300 max-w-2xl mx-auto text-sm md:text-base font-light leading-relaxed">
+            <p className="font-body-lg text-slate-300 max-w-2xl mx-auto text-sm md:text-base font-light leading-relaxed">
               Surte las marcas más cotizadas en tecnología, moda, sneakers, gadgets y hogar con <strong className="text-white font-medium">descuentos de hasta 45%</strong>. Mínimos accesibles desde 10 piezas, facturación CFDI completa y logística express asegurada con Envia.com.
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
                 href="#cotizador" 
-                className="w-full sm:w-auto bg-[#ff5000] hover:bg-[#e04500] text-white font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-full transition-all shadow-lg shadow-[#ff5000]/30 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs uppercase tracking-wider px-8 py-4 rounded-full transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 active:scale-95"
               >
                 <span className="material-symbols-outlined text-[18px]">request_quote</span>
                 Cotizar Pedido de Mayoreo
@@ -217,7 +217,7 @@ ${data.notes ? `- *Notas:* ${data.notes}` : ''}
                 href={generateWhatsAppUrl()} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto border border-white/30 hover:border-white text-white font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-full transition-colors flex items-center justify-center gap-2 hover:bg-white/10"
+                className="w-full sm:w-auto border border-[#C5A869]/40 hover:border-[#DFBE78] text-[#DFBE78] font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-full transition-colors flex items-center justify-center gap-2 hover:bg-[#C5A869]/10"
               >
                 <span className="material-symbols-outlined text-[18px] text-green-400">chat</span>
                 Hablar con Asesor B2B
@@ -284,16 +284,16 @@ ${data.notes ? `- *Notas:* ${data.notes}` : ''}
         </section>
 
         {/* 3. Escala de Precios y Niveles de Mayoreo (Tiers) */}
-        <section className="py-20 bg-neutral-900 text-white px-6">
+        <section className="py-20 bg-[#070D17] text-white px-6 border-y border-[#C5A869]/20">
           <div className="max-w-7xl mx-auto space-y-16">
             <div className="text-center max-w-3xl mx-auto space-y-3">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#ff5000] block">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#DFBE78] block">
                 Escala de Mayoreo
               </span>
               <h2 className="font-display-xl text-3xl md:text-5xl uppercase tracking-wider text-white font-extrabold">
                 Niveles para cada etapa comercial
               </h2>
-              <p className="text-neutral-400 font-body-md text-sm leading-relaxed">
+              <p className="text-slate-300 font-body-md text-sm leading-relaxed">
                 Precios transparentes y sin letras pequeñas. Desbloquea mayores beneficios conforme aumenta tu volumen de compra.
               </p>
             </div>
@@ -304,19 +304,19 @@ ${data.notes ? `- *Notas:* ${data.notes}` : ''}
                   key={tier.tierNumber}
                   className={`relative flex flex-col justify-between p-8 md:p-10 rounded-2xl border transition-all ${
                     tier.highlight 
-                      ? 'bg-neutral-950 border-[#ff5000] shadow-2xl scale-[1.02] z-10' 
-                      : 'bg-black/40 border-neutral-800 hover:border-neutral-700'
+                      ? 'bg-[#0B131F] border-[#C5A869] shadow-2xl shadow-[#C5A869]/10 scale-[1.02] z-10' 
+                      : 'bg-[#0B131F]/60 border-[#C5A869]/20 hover:border-[#C5A869]/50'
                   }`}
                 >
                   {tier.badgeText && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#ff5000] text-white text-[10px] font-bold tracking-widest uppercase py-1 px-4 rounded-full shadow-md">
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-black tracking-widest uppercase py-1 px-4 rounded-full shadow-md">
                       {tier.badgeText}
                     </div>
                   )}
 
                   <div>
                     <div className="flex justify-between items-center mb-6">
-                      <span className="text-xs tracking-widest text-[#ff5000] font-bold uppercase">NIVEL {tier.tierNumber}</span>
+                      <span className="text-xs tracking-widest text-[#DFBE78] font-bold uppercase">NIVEL {tier.tierNumber}</span>
                       <span className="bg-white/10 text-white text-[10px] font-semibold tracking-wider uppercase px-3 py-1 rounded-full border border-white/10">
                         {tier.range}
                       </span>
