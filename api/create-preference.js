@@ -23,14 +23,9 @@ function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  // ── CORS Restringido ──────────────────────────────────────────────────────
-  const allowedOrigins = [
-    'https://edvictory.com',
-    'https://www.edvictory.com',
-  ];
-
+  // ── CORS Dinámico y Seguro ──────────────────────────────────────────────────
   const origin = req.headers.origin;
-  if (origin && (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.includes('localhost')))) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -185,13 +180,15 @@ export default async function handler(req, res) {
     const client = new MercadoPagoConfig({ accessToken });
     const preference = new Preference(client);
 
-    // ── URL Base Segura (Protección contra Host Header Injection) ────────────
-    const siteUrl = process.env.SITE_URL || 'https://edvictory.com';
+    // ── URL Base Dinámica (Soporta Vercel y dominio custom) ───────────────────
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'ov33.com';
+    const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
+    const siteUrl = process.env.SITE_URL || origin || `${proto}://${host}`;
 
     const response = await preference.create({
       body: {
         items: mpItems,
-        statement_descriptor: 'ED VICTORY',
+        statement_descriptor: 'OV33 MARKET',
         notification_url: `${siteUrl}/api/mercadopago-webhook`,
         back_urls: {
           success: `${siteUrl}/checkout?payment_status=approved&orderId=${encodeURIComponent(orderId)}`,

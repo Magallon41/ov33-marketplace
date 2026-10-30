@@ -5,7 +5,7 @@ import { SEOHead } from '../components/seo/SEOHead';
 import { ProductCard } from '../components/ui/ProductCard';
 
 export function Home() {
-  const { products, categoryTree = [], brands = [] } = useProducts();
+  const { products, categoryTree = [], brands = [], heroBanners: customBanners = [], storeConfig = {} } = useProducts();
   const navigate = useNavigate();
 
   // Estado para el slider de Hero Banners
@@ -35,8 +35,7 @@ export function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  // Slider de banners automáticos con integración de paleta Midnight Obsidian & Champagne Gold
-  const heroBanners = [
+  const defaultHeroBanners = [
     {
       id: 1,
       badge: "✦ GRAN FESTIVAL MULTIMARCA",
@@ -75,6 +74,8 @@ export function Home() {
     }
   ];
 
+  const heroBanners = customBanners && customBanners.length > 0 ? customBanners : defaultHeroBanners;
+
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % heroBanners.length);
@@ -102,11 +103,31 @@ export function Home() {
     return p.category === activeTab;
   });
 
+  const categoryGradients = [
+    "from-blue-600 to-indigo-600",
+    "from-orange-500 to-amber-500",
+    "from-[#9A7B38] via-[#C5A869] to-[#DFBE78]",
+    "from-emerald-600 to-teal-600",
+    "from-purple-600 to-pink-600",
+    "from-cyan-600 to-blue-700"
+  ];
+
+  const dynamicQuickCategories = (categoryTree && categoryTree.length > 0)
+    ? categoryTree.slice(0, 4).map((c, i) => ({
+        name: c.name,
+        icon: c.icon || 'category',
+        query: c.name,
+        color: categoryGradients[i % categoryGradients.length]
+      }))
+    : [
+        { name: "Tecnología", icon: "devices", query: "Tecnología & Gadgets", color: "from-blue-600 to-indigo-600" },
+        { name: "Sneakers & Moda", icon: "apparel", query: "Moda & Sneakers", color: "from-orange-500 to-amber-500" },
+        { name: "Relojes & Lujo", icon: "watch", query: "Relojes & Accesorios", color: "from-[#9A7B38] via-[#C5A869] to-[#DFBE78]" },
+        { name: "Hogar & Termos", icon: "home", query: "Hogar & Estilo de Vida", color: "from-emerald-600 to-teal-600" }
+      ];
+
   const quickCategories = [
-    { name: "Tecnología", icon: "devices", query: "Tecnología & Gadgets", color: "from-blue-600 to-indigo-600" },
-    { name: "Sneakers & Moda", icon: "apparel", query: "Moda & Sneakers", color: "from-orange-500 to-amber-500" },
-    { name: "Relojes & Lujo", icon: "watch", query: "Relojes & Accesorios", color: "from-[#9A7B38] via-[#C5A869] to-[#DFBE78]" },
-    { name: "Hogar & Termos", icon: "home", query: "Hogar & Estilo de Vida", color: "from-emerald-600 to-teal-600" },
+    ...dynamicQuickCategories,
     { name: "Ofertas Flash", icon: "local_fire_department", query: "offers", isSpecial: true, color: "from-red-600 via-orange-600 to-rose-600" },
     { name: "Marcas Oficiales", icon: "verified", query: "brands", color: "from-[#070D17] to-[#142135] ring-1 ring-[#C5A869]/40" }
   ];

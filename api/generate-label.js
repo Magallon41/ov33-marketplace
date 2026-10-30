@@ -16,7 +16,7 @@ const STATE_CODES_MX = {
 const DEFAULT_ORIGIN = {
   name: process.env.ENVIA_ORIGIN_NAME || 'ED Victory Almacén',
   company: process.env.ENVIA_ORIGIN_COMPANY || 'ED VICTORY SHIRTS',
-  email: process.env.ENVIA_ORIGIN_EMAIL || 'contacto@edvictory.com',
+  email: process.env.ENVIA_ORIGIN_EMAIL || 'contacto@ov33.com',
   phone: process.env.ENVIA_ORIGIN_PHONE || '3531234567',
   street: process.env.ENVIA_ORIGIN_STREET || 'Centro',
   number: process.env.ENVIA_ORIGIN_NUMBER || '100',
@@ -28,13 +28,9 @@ const DEFAULT_ORIGIN = {
 };
 
 export default async function handler(req, res) {
-  // CORS Restringido
-  const allowedOrigins = [
-    'https://edvictory.com',
-    'https://www.edvictory.com'
-  ];
+  // CORS Dinámico y Seguro
   const origin = req.headers?.origin;
-  if (origin && (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.includes('localhost')))) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');

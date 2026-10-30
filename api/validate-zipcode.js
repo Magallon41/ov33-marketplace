@@ -6,13 +6,9 @@ const zipCache = new Map();
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 horas
 
 export default async function handler(req, res) {
-  // CORS
-  const allowedOrigins = [
-    'https://edvictory.com',
-    'https://www.edvictory.com'
-  ];
+  // CORS Dinámico (Soporta localhost, Vercel deployments y dominios personalizados)
   const origin = req.headers?.origin;
-  if (origin && (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.includes('localhost')))) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');

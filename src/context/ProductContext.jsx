@@ -1,14 +1,64 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_CATEGORY_TREE, INITIAL_ORDERS, INITIAL_BRANDS } from './initialProducts';
 import { db, isFirebaseEnabled } from '../utils/firebase';
-import { collection, getDocs, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, deleteDoc, getDoc, onSnapshot } from 'firebase/firestore';
 
 const ProductContext = createContext();
 const CACHE_KEY_PRODUCTS = 'ov33_products_cache';
 const CACHE_KEY_CATEGORIES = 'ov33_categories_cache';
 const CACHE_KEY_CATEGORY_TREE = 'ov33_category_tree_cache';
+const CACHE_KEY_STORE_CONFIG = 'ov33_store_config_cache';
+const CACHE_KEY_HERO_BANNERS = 'ov33_hero_banners_cache';
 const CACHE_KEY_TIMESTAMP = 'ov33_cache_timestamp';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutos de cache en navegador
+
+export const DEFAULT_HERO_BANNERS = [
+  {
+    id: 1,
+    badge: "✦ GRAN FESTIVAL MULTIMARCA",
+    title: "Marcas Oficiales, Precios Irresistibles",
+    subtitle: "Descubre Apple, Nike, Xiaomi, Casio, Stanley y las mejores marcas con Envío Gratis.",
+    cta: "Explorar Marcas",
+    link: "/catalog?filter=brands",
+    bgOverlay: "from-[#070D17]/95 via-[#0B131F]/80 to-transparent",
+    badgeStyle: "bg-[#C5A869]/20 text-[#DFBE78] border border-[#C5A869]/40 font-black",
+    ctaStyle: "bg-gradient-to-r from-orange-500 via-amber-500 to-[#C5A869] hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30",
+    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&auto=format&fit=crop&q=80"
+  },
+  {
+    id: 2,
+    badge: "🔥 SUPER FLASH DEALS",
+    title: "Hasta 50% OFF en Liquidación",
+    subtitle: "Smartwatches, audífonos Noise Cancelling, bocinas y accesorios al mejor precio.",
+    cta: "Ver Ofertas Flash",
+    link: "/ofertas",
+    bgOverlay: "from-red-950/95 via-red-900/70 to-transparent",
+    badgeStyle: "bg-yellow-400 text-red-950 font-black",
+    ctaStyle: "bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white shadow-red-500/30",
+    image: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=1000&auto=format&fit=crop&q=80"
+  },
+  {
+    id: 3,
+    badge: "SNEAKERS & STREETWEAR",
+    title: "Tendencias Urbanas & Calzado",
+    subtitle: "Nike Air Max, hoodies oversize y jeans Levi's listos para entrega express.",
+    cta: "Ver Sneakers",
+    link: "/catalog?category=Moda %26 Sneakers",
+    bgOverlay: "from-[#0B131F]/90 via-slate-900/70 to-transparent",
+    badgeStyle: "bg-[#DFBE78]/20 text-[#DFBE78] border border-[#C5A869]/40",
+    ctaStyle: "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30",
+    image: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1000&auto=format&fit=crop&q=80"
+  }
+];
+
+export const DEFAULT_STORE_CONFIG = {
+  announcementText: "¡Envío GRATIS a todo México en compras mayores a $499 MXN!",
+  announcementCoupon: "Cupón nuevo usuario: OV33BIENVENIDO",
+  announcementBadge: "GRATIS",
+  freeShippingThreshold: 499,
+  whatsappNumber: "5213300000000",
+  supportEmail: "soporte@ov33.com"
+};
 
 // Función de tiempo límite para evitar bloqueos por red lenta o bloqueada
 const withTimeout = (promise, ms = 4000) => {
@@ -148,6 +198,22 @@ export function ProductProvider({ children }) {
     return INITIAL_CATEGORY_TREE;
   });
 
+  const [heroBanners, setHeroBanners] = useState(() => {
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY_HERO_BANNERS) : null;
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return DEFAULT_HERO_BANNERS;
+  });
+
+  const [storeConfig, setStoreConfig] = useState(() => {
+    try {
+      const cached = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY_STORE_CONFIG) : null;
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return DEFAULT_STORE_CONFIG;
+  });
+
   const categories = categoryTree.map(c => c.name);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -169,6 +235,97 @@ export function ProductProvider({ children }) {
     });
     return Array.from(brandMap.values());
   }, [products]);
+
+  // ── Sincronización en Tiempo Real con Firebase Firestore (onSnapshot) ────────
+  useEffect(() => {
+    if (!isFirebaseEnabled || !db) {
+      loadFromLocalStorageFallback();
+      return;
+    }
+
+    let unsubProducts = () => {};
+    let unsubCategories = () => {};
+    let unsubConfig = () => {};
+
+    try {
+      // 1. Listener en tiempo real de productos
+      unsubProducts = onSnapshot(collection(db, 'ov33_products'), (snapshot) => {
+        if (!snapshot.empty) {
+          const loaded = [];
+          snapshot.forEach(docSnap => {
+            const prod = { id: docSnap.id, ...docSnap.data() };
+            if (isValidMarketplaceProduct(prod)) {
+              loaded.push(normalizeProductClassification(prod));
+            }
+          });
+          loaded.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+          setProducts(loaded);
+          setIsUsingFallback(false);
+          try {
+            localStorage.setItem(CACHE_KEY_PRODUCTS, JSON.stringify(loaded));
+            localStorage.setItem('ov33_products', JSON.stringify(loaded));
+            localStorage.setItem(CACHE_KEY_TIMESTAMP, Date.now().toString());
+          } catch (e) {}
+        } else {
+          setProducts(INITIAL_PRODUCTS.map(normalizeProductClassification));
+          setIsUsingFallback(false);
+        }
+      }, (err) => {
+        console.warn("Aviso en listener de productos:", err);
+        setIsUsingFallback(true);
+      });
+
+      // 2. Listener en tiempo real de categorías
+      unsubCategories = onSnapshot(collection(db, 'ov33_categories'), (snapshot) => {
+        if (!snapshot.empty) {
+          const treeDoc = snapshot.docs.find(d => d.id === 'tree');
+          const listDoc = snapshot.docs.find(d => d.id === 'list');
+          let finalTree = INITIAL_CATEGORY_TREE;
+          if (treeDoc && Array.isArray(treeDoc.data().tree)) {
+            finalTree = normalizeCategoryTree(treeDoc.data().tree);
+          } else if (listDoc && Array.isArray(listDoc.data().categories)) {
+            finalTree = normalizeCategoryTree(listDoc.data().categories);
+          }
+          setCategoryTree(finalTree);
+          try {
+            localStorage.setItem(CACHE_KEY_CATEGORY_TREE, JSON.stringify(finalTree));
+            localStorage.setItem('ov33_category_tree', JSON.stringify(finalTree));
+            localStorage.setItem(CACHE_KEY_CATEGORIES, JSON.stringify(finalTree.map(c => c.name)));
+          } catch (e) {}
+        }
+      }, (err) => {
+        console.warn("Aviso en listener de categorías:", err);
+      });
+
+      // 3. Listener en tiempo real de configuración y banners de tienda
+      unsubConfig = onSnapshot(doc(db, 'ov33_settings', 'store_config'), (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.storeConfig) {
+            setStoreConfig(prev => ({ ...prev, ...data.storeConfig }));
+            try { localStorage.setItem(CACHE_KEY_STORE_CONFIG, JSON.stringify(data.storeConfig)); } catch (e) {}
+          }
+          if (Array.isArray(data.heroBanners) && data.heroBanners.length > 0) {
+            setHeroBanners(data.heroBanners);
+            try { localStorage.setItem(CACHE_KEY_HERO_BANNERS, JSON.stringify(data.heroBanners)); } catch (e) {}
+          }
+        }
+      }, (err) => {
+        console.warn("Aviso en listener de store_config:", err);
+      });
+
+    } catch (listenerError) {
+      console.warn("Error iniciando listeners de Firestore:", listenerError);
+      setIsUsingFallback(true);
+      loadFromLocalStorageFallback();
+    }
+
+    return () => {
+      unsubProducts();
+      unsubCategories();
+      unsubConfig();
+    };
+  }, []);
 
   const loadInitialData = useCallback(async (forceCloud = false) => {
     // 0. Cache inteligente de 15 minutos (a menos que se fuerce la recarga desde la nube)
@@ -447,7 +604,7 @@ export function ProductProvider({ children }) {
     } catch (e) {}
   };
 
-  const addCategory = async (categoryName) => {
+  const addCategory = async (categoryName, icon = 'category') => {
     const trimmed = (categoryName || '').trim();
     if (!trimmed) return;
     if (categoryTree.some(c => c.name.toLowerCase() === trimmed.toLowerCase())) {
@@ -457,7 +614,7 @@ export function ProductProvider({ children }) {
     const newCat = {
       id: trimmed.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-'),
       name: trimmed,
-      icon: 'category',
+      icon: icon || 'category',
       subcategories: []
     };
     const updatedTree = [...categoryTree, newCat];
@@ -465,28 +622,99 @@ export function ProductProvider({ children }) {
     await saveCategoryTreeToStorage(updatedTree);
   };
 
-  const updateCategory = async (oldName, newName) => {
-    const trimmedNew = (newName || '').trim();
-    if (!trimmedNew || oldName === trimmedNew) return;
+  const reorderCategories = async (newTree) => {
+    if (!Array.isArray(newTree)) return;
+    setCategoryTree(newTree);
+    await saveCategoryTreeToStorage(newTree);
+  };
 
-    if (categoryTree.some(c => c.name.toLowerCase() === trimmedNew.toLowerCase() && c.name.toLowerCase() !== oldName.toLowerCase())) {
+  const moveCategory = async (fromIndex, toIndex) => {
+    if (fromIndex < 0 || toIndex < 0 || fromIndex >= categoryTree.length || toIndex >= categoryTree.length) return;
+    const updated = [...categoryTree];
+    const [moved] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, moved);
+    setCategoryTree(updated);
+    await saveCategoryTreeToStorage(updated);
+  };
+
+  const moveSubcategory = async (categoryName, fromIndex, toIndex) => {
+    const targetCat = categoryTree.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
+    if (!targetCat || !targetCat.subcategories) return;
+    if (fromIndex < 0 || toIndex < 0 || fromIndex >= targetCat.subcategories.length || toIndex >= targetCat.subcategories.length) return;
+    
+    const updatedSubs = [...targetCat.subcategories];
+    const [moved] = updatedSubs.splice(fromIndex, 1);
+    updatedSubs.splice(toIndex, 0, moved);
+
+    const updatedTree = categoryTree.map(c => {
+      if (c.name.toLowerCase() === categoryName.toLowerCase()) {
+        return { ...c, subcategories: updatedSubs };
+      }
+      return c;
+    });
+    setCategoryTree(updatedTree);
+    await saveCategoryTreeToStorage(updatedTree);
+  };
+
+  const updateCategory = async (oldName, newName, icon = null) => {
+    const trimmedNew = (newName || '').trim();
+    if (!trimmedNew) return;
+
+    if (trimmedNew.toLowerCase() !== oldName.toLowerCase() && categoryTree.some(c => c.name.toLowerCase() === trimmedNew.toLowerCase())) {
       throw new Error(`Ya existe una categoría llamada "${trimmedNew}".`);
     }
 
-    const updatedTree = categoryTree.map(c => c.name === oldName ? { ...c, name: trimmedNew } : c);
+    const updatedTree = categoryTree.map(c => {
+      if (c.name.toLowerCase() === oldName.toLowerCase()) {
+        return {
+          ...c,
+          name: trimmedNew,
+          icon: icon || c.icon || 'category'
+        };
+      }
+      return c;
+    });
     setCategoryTree(updatedTree);
 
     const affectedProducts = [];
-    const updatedProducts = products.map(p => {
-      if ((p.category || '').toLowerCase() === oldName.toLowerCase()) {
-        const updatedP = { ...p, category: trimmedNew };
-        affectedProducts.push(updatedP);
-        return updatedP;
-      }
-      return p;
-    });
-    setProducts(updatedProducts);
+    let updatedProducts = products;
+    if (trimmedNew.toLowerCase() !== oldName.toLowerCase()) {
+      updatedProducts = products.map(p => {
+        if ((p.category || '').toLowerCase() === oldName.toLowerCase()) {
+          const updatedP = { ...p, category: trimmedNew };
+          affectedProducts.push(updatedP);
+          return updatedP;
+        }
+        return p;
+      });
+      setProducts(updatedProducts);
+    }
     await saveCategoryTreeToStorage(updatedTree, affectedProducts, updatedProducts);
+  };
+
+  const updateStoreConfig = async (newConfig, newBanners) => {
+    const updatedConf = newConfig ? { ...storeConfig, ...newConfig } : storeConfig;
+    const updatedBanners = Array.isArray(newBanners) ? newBanners : heroBanners;
+
+    setStoreConfig(updatedConf);
+    setHeroBanners(updatedBanners);
+
+    if (isFirebaseEnabled && db) {
+      try {
+        await setDoc(doc(db, 'ov33_settings', 'store_config'), {
+          storeConfig: updatedConf,
+          heroBanners: updatedBanners,
+          updatedAt: new Date().toISOString()
+        });
+      } catch (err) {
+        console.error("❌ Error guardando store_config en Firestore:", err);
+      }
+    }
+
+    try {
+      localStorage.setItem(CACHE_KEY_STORE_CONFIG, JSON.stringify(updatedConf));
+      localStorage.setItem(CACHE_KEY_HERO_BANNERS, JSON.stringify(updatedBanners));
+    } catch (e) {}
   };
 
   const deleteCategory = async (categoryName) => {
@@ -653,6 +881,8 @@ export function ProductProvider({ children }) {
       categoryTree,
       brands,
       orders,
+      heroBanners,
+      storeConfig,
       loading,
       isFirebaseEnabled,
       isUsingFallback,
@@ -664,9 +894,13 @@ export function ProductProvider({ children }) {
       addCategory,
       deleteCategory,
       updateCategory,
+      reorderCategories,
+      moveCategory,
       addSubcategory,
       updateSubcategory,
       deleteSubcategory,
+      moveSubcategory,
+      updateStoreConfig,
       addOrder,
       updateOrderStatus,
       fetchOrders,

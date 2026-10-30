@@ -7,7 +7,7 @@ import { useProducts } from '../../context/ProductContext';
 export function Navbar() {
   const { totalItems, setIsOpen, subtotal } = useCart();
   const { currentUser, logout } = useAuth();
-  const { isUsingFallback, categoryTree = [], brands = [] } = useProducts();
+  const { isUsingFallback, categoryTree = [], brands = [], storeConfig = {} } = useProducts();
   const navigate = useNavigate();
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -45,14 +45,7 @@ export function Navbar() {
   };
 
   const adminBannerActive = currentUser && currentUser.role === 'admin';
-  const fallbackBannerActive = isUsingFallback && adminBannerActive;
-
-  let headerTopClass = 'top-0';
-  if (adminBannerActive && fallbackBannerActive) {
-    headerTopClass = 'top-16';
-  } else if (adminBannerActive || fallbackBannerActive) {
-    headerTopClass = 'top-8';
-  }
+  const headerTopClass = adminBannerActive ? 'top-8' : 'top-0';
 
   const trendingTags = ['AirPods Pro', 'Nike Air Max', 'Stanley 40oz', 'Casio Gold', 'Xiaomi Band', 'Levi\'s 501'];
 
@@ -69,16 +62,6 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Local Fallback Warning Top Banner */}
-      {fallbackBannerActive && (
-        <div className={`bg-red-700 text-white text-[11px] font-bold py-1.5 text-center fixed w-full z-[60] flex items-center justify-center gap-2 shadow-sm select-none h-8 ${
-          adminBannerActive ? 'top-8' : 'top-0'
-        }`}>
-          <span className="material-symbols-outlined text-[15px] animate-pulse">cloud_off</span>
-          <span>BASE DE DATOS EN MODO LOCAL (OFFLINE)</span>
-        </div>
-      )}
-
       <header className={`bg-white dark:bg-[#0B131F] text-slate-800 dark:text-slate-100 fixed w-full z-50 border-b border-slate-200 dark:border-[#C5A869]/20 shadow-xs transition-all duration-300 ${headerTopClass}`}>
         
         {/* Barra superior de anuncios y beneficios (Marketplace Top Bar — Midnight & Gold with Red/Orange Accent) */}
@@ -86,11 +69,11 @@ export function Navbar() {
           <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
             <div className="flex items-center gap-2 font-medium">
               <span className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-wide shadow-xs">
-                GRATIS
+                {storeConfig.announcementBadge || 'GRATIS'}
               </span>
-              <span>¡Envío GRATIS a todo México en compras mayores a $499 MXN!</span>
+              <span>{storeConfig.announcementText || '¡Envío GRATIS a todo México en compras mayores a $499 MXN!'}</span>
               <span className="hidden md:inline text-[#C5A869]/40">•</span>
-              <span className="hidden md:inline text-[#DFBE78] font-bold">Cupón nuevo usuario: OV33BIENVENIDO</span>
+              <span className="hidden md:inline text-[#DFBE78] font-bold">{storeConfig.announcementCoupon || 'Cupón nuevo usuario: OV33BIENVENIDO'}</span>
             </div>
 
             <div className="hidden sm:flex items-center gap-4 text-slate-400">

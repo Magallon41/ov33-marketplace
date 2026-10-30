@@ -1,11 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const SITE_NAME = 'ED VICTORY SHIRT BRAND';
-const SITE_URL = 'https://edvictory.com';
+const SITE_NAME = 'OV33 MARKETPLACE — Tu Marketplace Multimarca Oficial';
+const SITE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://ov33.com';
 const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
 const DEFAULT_DESCRIPTION =
-  'ED VICTORY — Camisas de lujo para el hombre moderno. Arquitectura textil con precisión, sobriedad y materiales de primera calidad. Envíos a toda México.';
+  'OV33 Market — Tu Marketplace Multimarca en México. Las mejores marcas en tecnología, moda, sneakers, relojes y estilo de vida con envíos gratis y pago protegido.';
 
 /**
  * Componente SEO reutilizable.

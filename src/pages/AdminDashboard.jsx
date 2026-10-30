@@ -143,12 +143,13 @@ const compressSingleBase64 = (base64Str, maxWidth, maxHeight, quality) => {
 // Función para subir imagen base64 a ImgBB y obtener la URL pública directa
 const uploadToImgBB = async (base64Str) => {
   if (!base64Str || !base64Str.startsWith('data:image/')) {
-    return base64Str; // Si ya es una URL, no hacemos nada
+    return base64Str; // Si ya es una URL HTTPS o HTTP, se mantiene intacta
   }
   try {
     const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
     if (!apiKey) {
-      throw new Error('VITE_IMGBB_API_KEY no está configurada en las variables de entorno.');
+      console.warn('VITE_IMGBB_API_KEY no configurada. Optimizando imagen como base64 comprimida.');
+      return await compressSingleBase64(base64Str, 800, 1000, 0.65);
     }
     const url = `https://api.imgbb.com/1/upload?key=${apiKey}`;
     
@@ -174,8 +175,8 @@ const uploadToImgBB = async (base64Str) => {
       throw new Error('Respuesta inválida de ImgBB');
     }
   } catch (error) {
-    console.error("Error subiendo a ImgBB:", error);
-    throw error;
+    console.warn("Aviso al subir imagen a ImgBB (usando compresión interna optimizada):", error);
+    return await compressSingleBase64(base64Str, 800, 1000, 0.65);
   }
 };
 
@@ -184,9 +185,10 @@ export function AdminDashboard() {
   const { 
     products, categories, categoryTree = [], orders, isFirebaseEnabled, isUsingFallback, refreshCatalog,
     addProduct, updateProduct, deleteProduct, 
-    addCategory, deleteCategory, updateCategory, 
-    addSubcategory, updateSubcategory, deleteSubcategory,
-    updateOrderStatus, resetToDefaults, fetchOrders
+    addCategory, deleteCategory, updateCategory, reorderCategories, moveCategory,
+    addSubcategory, updateSubcategory, deleteSubcategory, moveSubcategory,
+    updateOrderStatus, resetToDefaults, fetchOrders,
+    storeConfig, heroBanners, updateStoreConfig
   } = useProducts();
   
   const navigate = useNavigate();
@@ -276,16 +278,47 @@ export function AdminDashboard() {
   const [isVarDragging, setIsVarDragging] = useState(false);
   const [varImageError, setVarImageError] = useState('');
 
+  // Direct image URL inputs
+  const [directImageUrl, setDirectImageUrl] = useState('');
+  const [varDirectImageUrl, setVarDirectImageUrl] = useState('');
+
   // Category Form & Edit states
   const [newCatName, setNewCatName] = useState('');
+  const [newCatIcon, setNewCatIcon] = useState('category');
   const [editingCatOldName, setEditingCatOldName] = useState(null);
   const [editingCatNewName, setEditingCatNewName] = useState('');
+  const [editingCatIcon, setEditingCatIcon] = useState('');
   const [isUpdatingCat, setIsUpdatingCat] = useState(false);
 
   // Subcategory Form & Edit states
   const [newSubcatInputs, setNewSubcatInputs] = useState({}); // { [catName]: string }
   const [editingSubcat, setEditingSubcat] = useState(null); // { catName, oldName, newName }
   const [isUpdatingSubcat, setIsUpdatingSubcat] = useState(false);
+
+  // Store Customization states
+  const [localConfig, setLocalConfig] = useState(storeConfig || {});
+  const [localBanners, setLocalBanners] = useState(heroBanners || []);
+  const [editingBannerIdx, setEditingBannerIdx] = useState(null);
+  const [bannerForm, setBannerForm] = useState({
+    badge: '🔥 OFERTA EXCLUSIVA',
+    title: 'NUEVA COLECCIÓN 2026',
+    subtitle: 'Envíos express a todo México con garantía oficial',
+    cta: 'EXPLORAR AHORA',
+    link: '/catalog',
+    image: '',
+    ctaStyle: 'bg-gradient-to-r from-orange-500 via-amber-500 to-[#C5A869] text-white',
+    badgeStyle: 'bg-[#C5A869]/20 text-[#DFBE78] border border-[#C5A869]/40 font-black',
+    bgOverlay: 'from-[#070D17]/95 via-[#0B131F]/80 to-transparent'
+  });
+  const [isSavingCustomization, setIsSavingCustomization] = useState(false);
+
+  useEffect(() => {
+    if (storeConfig) setLocalConfig(storeConfig);
+  }, [storeConfig]);
+
+  useEffect(() => {
+    if (heroBanners) setLocalBanners(heroBanners);
+  }, [heroBanners]);
 
   // Database Connection Diagnostics State
   const [dbTestState, setDbTestState] = useState('idle'); // idle, testing, success, error
@@ -903,9 +936,10 @@ export function AdminDashboard() {
     if (!cleanCatName) return;
     try {
       showToast('Guardando nueva categoría...', 'info', 2000);
-      await addCategory(cleanCatName);
+      await addCategory(cleanCatName, newCatIcon || 'category');
       showToast(`Categoría "${cleanCatName}" agregada con éxito.`, 'success');
       setNewCatName('');
+      setNewCatIcon('category');
     } catch (error) {
       showToast(error.message || 'Error al agregar categoría.', 'error');
     }
@@ -1171,6 +1205,7 @@ export function AdminDashboard() {
               { id: 'dashboard', label: 'Resumen Financiero', icon: 'dashboard' },
               { id: 'products', label: 'Gestionar Catálogo', icon: 'apparel' },
               { id: 'categories', label: 'Gestionar Categorías', icon: 'sell' },
+              { id: 'customization', label: 'Personalizar Tienda', icon: 'palette' },
               { 
                 id: 'wholesale', 
                 label: 'Mayoristas / B2B', 
@@ -1528,20 +1563,14 @@ export function AdminDashboard() {
 
                             <td className="py-4 text-right space-x-2 shrink-0">
                               <button
-                                onClick={() => !isUsingFallback && handleOpenEdit(product)}
-                                disabled={isUsingFallback}
-                                title={isUsingFallback ? 'Sin conexión a Firebase' : 'Editar producto'}
-                                className={`font-label-caps text-[9px] border py-1.5 px-3 uppercase transition-colors ${
-                                  isUsingFallback
-                                    ? 'border-neutral-200 text-neutral-300 cursor-not-allowed'
-                                    : 'border-neutral-300 hover:border-black hover:text-black cursor-pointer'
-                                }`}
+                                onClick={() => handleOpenEdit(product)}
+                                title="Editar producto"
+                                className="font-label-caps text-[9px] border py-1.5 px-3 uppercase transition-colors border-neutral-300 hover:border-black hover:text-black cursor-pointer bg-white"
                               >
                                 Editar
                               </button>
                               <button
                                 onClick={async () => {
-                                  if (isUsingFallback) return;
                                   if (window.confirm(`¿Seguro que desea eliminar "${product.name}"?`)) {
                                     try {
                                       showToast('Eliminando prenda...', 'info', 2000);
@@ -1552,13 +1581,8 @@ export function AdminDashboard() {
                                     }
                                   }
                                 }}
-                                disabled={isUsingFallback}
-                                title={isUsingFallback ? 'Sin conexión a Firebase' : 'Eliminar producto'}
-                                className={`font-label-caps text-[9px] border py-1.5 px-3 uppercase transition-colors ${
-                                  isUsingFallback
-                                    ? 'border-neutral-200 text-neutral-300 cursor-not-allowed'
-                                    : 'border-red-200 text-red-600 hover:bg-red-50 cursor-pointer'
-                                }`}
+                                title="Eliminar producto"
+                                className="font-label-caps text-[9px] border py-1.5 px-3 uppercase transition-colors border-red-200 text-red-600 hover:bg-red-50 cursor-pointer bg-white"
                               >
                                 Eliminar
                               </button>
@@ -1890,6 +1914,31 @@ export function AdminDashboard() {
                                 <p className="text-[9px] text-red-600 mt-2 font-body-md">{varImageError}</p>
                               )}
 
+                              {/* Direct URL input for Variant */}
+                              <div className="flex gap-2 mt-2">
+                                <input
+                                  type="url"
+                                  placeholder="O pegar URL de imagen directa (HTTPS)..."
+                                  value={varDirectImageUrl}
+                                  onChange={(e) => setVarDirectImageUrl(e.target.value)}
+                                  className="flex-1 border border-neutral-200 px-2 py-1 text-[11px] font-body-md outline-none focus:border-black bg-white"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (varDirectImageUrl && (varDirectImageUrl.startsWith('http://') || varDirectImageUrl.startsWith('https://'))) {
+                                      setVarImages(prev => [...prev, varDirectImageUrl.trim()]);
+                                      setVarDirectImageUrl('');
+                                    } else {
+                                      alert('Ingresa una URL válida que empiece con https://');
+                                    }
+                                  }}
+                                  className="bg-neutral-800 text-white px-2.5 py-1 text-[9px] font-label-caps uppercase tracking-wider hover:bg-black"
+                                >
+                                  + Añadir URL
+                                </button>
+                              </div>
+
                               {/* Variant Image Previews */}
                               {varImages.length > 0 && (
                                 <div className="grid grid-cols-4 gap-2 mt-3">
@@ -2002,6 +2051,31 @@ export function AdminDashboard() {
                             {imageError && (
                               <p className="text-[10px] text-red-600 mt-2 font-body-md">{imageError}</p>
                             )}
+
+                            {/* Direct URL input for Single Mode */}
+                            <div className="flex gap-2 mt-3">
+                              <input
+                                type="url"
+                                placeholder="O ingresar URL directa de imagen (HTTPS)..."
+                                value={directImageUrl}
+                                onChange={(e) => setDirectImageUrl(e.target.value)}
+                                className="flex-1 border border-neutral-200 px-3 py-2 text-xs font-body-md outline-none focus:border-black bg-white"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (directImageUrl && (directImageUrl.startsWith('http://') || directImageUrl.startsWith('https://'))) {
+                                    setFormImages(prev => [...prev, directImageUrl.trim()]);
+                                    setDirectImageUrl('');
+                                  } else {
+                                    alert('Ingresa una URL válida que empiece con https://');
+                                  }
+                                }}
+                                className="bg-black text-white px-4 py-2 text-[10px] font-label-caps uppercase tracking-wider hover:bg-neutral-800 transition-colors whitespace-nowrap"
+                              >
+                                + Añadir URL
+                              </button>
+                            </div>
 
                             {/* Images previews */}
                             {formImages.length > 0 && (
@@ -2145,12 +2219,37 @@ export function AdminDashboard() {
                         value={newCatName}
                         onChange={(e) => setNewCatName(e.target.value)}
                         className="w-full bg-transparent border-none outline-none py-2 text-sm font-body-md uppercase tracking-wider font-semibold"
-                        placeholder="Ej. Camisas, Polos, Trajes..."
+                        placeholder="Ej. Tecnología & Gadgets, Moda, Relojes..."
                         required
                       />
                     </div>
+                    <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 tracking-wider uppercase mb-1">Ícono (Material Symbol)</label>
+                      <div className="flex items-center gap-2 pb-1">
+                        <span className="material-symbols-outlined text-[20px] text-amber-600">{newCatIcon || 'category'}</span>
+                        <input 
+                          type="text" 
+                          value={newCatIcon}
+                          onChange={(e) => setNewCatIcon(e.target.value)}
+                          className="w-full bg-transparent border-none outline-none py-1 text-xs font-mono"
+                          placeholder="Ej. devices, checkroom, watch, home, diamond"
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-1 mb-2">
+                        {['devices', 'checkroom', 'watch', 'home', 'diamond', 'sports_esports', 'local_offer'].map(ico => (
+                          <button
+                            key={ico}
+                            type="button"
+                            onClick={() => setNewCatIcon(ico)}
+                            className={`px-1.5 py-0.5 text-[9px] font-mono border rounded ${newCatIcon === ico ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold' : 'border-neutral-200 text-neutral-500'}`}
+                          >
+                            {ico}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <p className="text-[11px] text-neutral-400 font-body-md leading-relaxed">
-                      Crea la categoría base. Luego podrás añadirle todas sus subcategorías de confección o estilo.
+                      Crea la categoría base. Luego podrás ordenar su posición con las flechas y añadirle subcategorías.
                     </p>
                     <button 
                       type="submit"
@@ -2201,7 +2300,7 @@ export function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="space-y-6">
-                      {categoryTree.map((cat) => {
+                      {categoryTree.map((cat, catIdx) => {
                         const catProducts = products.filter(p => (p.category || '').toLowerCase() === cat.name.toLowerCase());
                         const isEditingCat = editingCatOldName === cat.name;
                         const subcategories = cat.subcategories || [];
@@ -2216,24 +2315,21 @@ export function AdminDashboard() {
                                     e.preventDefault();
                                     const clean = sanitizeInput(editingCatNewName);
                                     if (!clean) return;
-                                    if (clean.toLowerCase() === cat.name.toLowerCase()) {
-                                      setEditingCatOldName(null);
-                                      return;
-                                    }
                                     try {
                                       setIsUpdatingCat(true);
                                       showToast('Actualizando categoría...', 'info', 1500);
-                                      await updateCategory(cat.name, clean);
+                                      await updateCategory(cat.name, clean, editingCatIcon || cat.icon || 'category');
                                       showToast(`Categoría actualizada a "${clean}".`, 'success');
                                       setEditingCatOldName(null);
                                       setEditingCatNewName('');
+                                      setEditingCatIcon('');
                                     } catch (err) {
                                       showToast(err.message || 'Error al actualizar categoría.', 'error');
                                     } finally {
                                       setIsUpdatingCat(false);
                                     }
                                   }}
-                                  className="flex items-center gap-2 flex-1"
+                                  className="flex flex-wrap items-center gap-2 flex-1"
                                 >
                                   <input
                                     type="text"
@@ -2241,7 +2337,16 @@ export function AdminDashboard() {
                                     onChange={(e) => setEditingCatNewName(e.target.value)}
                                     autoFocus
                                     disabled={isUpdatingCat}
-                                    className="border border-neutral-400 bg-white px-3 py-1.5 text-xs uppercase tracking-wider font-bold outline-none flex-1"
+                                    placeholder="Nombre de categoría"
+                                    className="border border-neutral-400 bg-white px-3 py-1.5 text-xs uppercase tracking-wider font-bold outline-none flex-1 min-w-[140px]"
+                                  />
+                                  <input
+                                    type="text"
+                                    value={editingCatIcon}
+                                    onChange={(e) => setEditingCatIcon(e.target.value)}
+                                    disabled={isUpdatingCat}
+                                    placeholder="Ícono (ej. devices, watch)"
+                                    className="border border-neutral-400 bg-white px-3 py-1.5 text-xs font-mono outline-none w-36"
                                   />
                                   <button
                                     type="submit"
@@ -2255,6 +2360,7 @@ export function AdminDashboard() {
                                     onClick={() => {
                                       setEditingCatOldName(null);
                                       setEditingCatNewName('');
+                                      setEditingCatIcon('');
                                     }}
                                     className="border border-neutral-300 bg-white text-neutral-600 px-3 py-1.5 font-button text-[9px] uppercase tracking-widest"
                                   >
@@ -2263,7 +2369,45 @@ export function AdminDashboard() {
                                 </form>
                               ) : (
                                 <div className="flex items-center gap-3">
-                                  <span className="w-2.5 h-2.5 bg-[#c5a880] inline-block" />
+                                  {/* Category Order Buttons */}
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      type="button"
+                                      disabled={catIdx === 0}
+                                      onClick={async () => {
+                                        try {
+                                          await moveCategory(catIdx, catIdx - 1);
+                                          showToast('Categoría movida hacia arriba', 'success', 1500);
+                                        } catch (err) {
+                                          showToast(err.message, 'error');
+                                        }
+                                      }}
+                                      className={`p-1 border rounded-none flex items-center justify-center transition-colors ${catIdx === 0 ? 'border-neutral-200 text-neutral-300 cursor-not-allowed' : 'border-neutral-300 text-black hover:border-black hover:bg-neutral-100 cursor-pointer'}`}
+                                      title="Subir posición"
+                                    >
+                                      <span className="material-symbols-outlined text-[15px]">arrow_upward</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={catIdx === categoryTree.length - 1}
+                                      onClick={async () => {
+                                        try {
+                                          await moveCategory(catIdx, catIdx + 1);
+                                          showToast('Categoría movida hacia abajo', 'success', 1500);
+                                        } catch (err) {
+                                          showToast(err.message, 'error');
+                                        }
+                                      }}
+                                      className={`p-1 border rounded-none flex items-center justify-center transition-colors ${catIdx === categoryTree.length - 1 ? 'border-neutral-200 text-neutral-300 cursor-not-allowed' : 'border-neutral-300 text-black hover:border-black hover:bg-neutral-100 cursor-pointer'}`}
+                                      title="Bajar posición"
+                                    >
+                                      <span className="material-symbols-outlined text-[15px]">arrow_downward</span>
+                                    </button>
+                                  </div>
+
+                                  <span className="material-symbols-outlined text-[20px] text-amber-600">
+                                    {cat.icon || 'category'}
+                                  </span>
                                   <strong className="font-display-xl text-base uppercase tracking-wider text-black">
                                     {cat.name}
                                   </strong>
@@ -2280,12 +2424,13 @@ export function AdminDashboard() {
                                     onClick={() => {
                                       setEditingCatOldName(cat.name);
                                       setEditingCatNewName(cat.name);
+                                      setEditingCatIcon(cat.icon || 'category');
                                     }}
                                     className="text-neutral-600 hover:text-black p-1.5 hover:bg-neutral-200/60 rounded transition-colors text-xs flex items-center gap-1"
                                     title={`Renombrar categoría ${cat.name}`}
                                   >
                                     <span className="material-symbols-outlined text-[16px]">edit</span>
-                                    <span className="font-label-caps text-[9px] uppercase tracking-wider">Renombrar</span>
+                                    <span className="font-label-caps text-[9px] uppercase tracking-wider">Editar</span>
                                   </button>
                                   <button
                                     type="button"
@@ -2327,7 +2472,7 @@ export function AdminDashboard() {
                                   </p>
                                 ) : (
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                    {subcategories.map((sub) => {
+                                    {subcategories.map((sub, subIdx) => {
                                       const subProductsCount = catProducts.filter(p => (p.subcategory || '').toLowerCase() === sub.toLowerCase()).length;
                                       const isEditingSub = editingSubcat?.catName === cat.name && editingSubcat?.oldName === sub;
 
@@ -2380,6 +2525,40 @@ export function AdminDashboard() {
                                           </div>
 
                                           <div className="flex items-center gap-1">
+                                            {/* Subcategory reorder buttons */}
+                                            <button
+                                              type="button"
+                                              disabled={subIdx === 0}
+                                              onClick={async () => {
+                                                try {
+                                                  await moveSubcategory(cat.name, subIdx, subIdx - 1);
+                                                  showToast('Subcategoría subida', 'success', 1500);
+                                                } catch (err) {
+                                                  showToast(err.message, 'error');
+                                                }
+                                              }}
+                                              className={`p-0.5 ${subIdx === 0 ? 'text-neutral-200 cursor-not-allowed' : 'text-neutral-500 hover:text-black cursor-pointer'}`}
+                                              title="Subir subcategoría"
+                                            >
+                                              <span className="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                            </button>
+                                            <button
+                                              type="button"
+                                              disabled={subIdx === subcategories.length - 1}
+                                              onClick={async () => {
+                                                try {
+                                                  await moveSubcategory(cat.name, subIdx, subIdx + 1);
+                                                  showToast('Subcategoría bajada', 'success', 1500);
+                                                } catch (err) {
+                                                  showToast(err.message, 'error');
+                                                }
+                                              }}
+                                              className={`p-0.5 ${subIdx === subcategories.length - 1 ? 'text-neutral-200 cursor-not-allowed' : 'text-neutral-500 hover:text-black cursor-pointer'}`}
+                                              title="Bajar subcategoría"
+                                            >
+                                              <span className="material-symbols-outlined text-[14px]">arrow_downward</span>
+                                            </button>
+
                                             <button
                                               type="button"
                                               onClick={() => setEditingSubcat({ catName: cat.name, oldName: sub, newName: sub })}
@@ -2436,6 +2615,441 @@ export function AdminDashboard() {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Store Customization */}
+        {activeTab === 'customization' && (
+          <div className="space-y-8 animate-[fadeIn_0.3s_ease]">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="font-label-caps text-xs text-amber-600 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px]">palette</span>
+                  CONFIGURACIÓN VISUAL Y COMERCIAL
+                </span>
+                <h1 className="font-display-xl text-[28px] uppercase tracking-wide mt-1">Personalizar Tienda</h1>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Edita la barra de anuncios superior, cupones, umbrales de envío gratis y el carrusel de banners principal. Se sincroniza en tiempo real en Firebase.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                disabled={isSavingCustomization}
+                onClick={async () => {
+                  try {
+                    setIsSavingCustomization(true);
+                    showToast('Guardando cambios de tienda en Firestore...', 'info', 2000);
+                    await updateStoreConfig(localConfig, localBanners);
+                    showToast('¡Tienda personalizada y sincronizada en vivo con éxito!', 'success', 3500);
+                  } catch (err) {
+                    showToast(err.message || 'Error al guardar personalización', 'error');
+                  } finally {
+                    setIsSavingCustomization(false);
+                  }
+                }}
+                className="bg-black hover:bg-neutral-800 text-white px-6 py-3 font-button text-xs uppercase tracking-widest transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
+                {isSavingCustomization ? 'GUARDANDO...' : 'GUARDAR CAMBIOS EN VIVO'}
+              </button>
+            </div>
+
+            {/* Top Announcement Bar Customization */}
+            <div className="bg-white border border-neutral-200 p-6 md:p-8 shadow-xs">
+              <h3 className="font-display-xl text-lg uppercase font-bold mb-4 pb-3 border-b border-neutral-100 flex items-center gap-2">
+                <span className="material-symbols-outlined text-amber-600">campaign</span>
+                Barra Superior de Anuncios y Ofertas
+              </h3>
+
+              {/* Live Preview */}
+              <div className="mb-6">
+                <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-2">Vista previa en tiempo real:</label>
+                <div className="bg-[#070D17] text-white text-[11px] py-2 px-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#C5A869]/30">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-[9px] px-1.5 py-0.5 uppercase tracking-wider">
+                      {localConfig.announcementBadge || 'GRATIS'}
+                    </span>
+                    <span className="font-medium text-neutral-200">
+                      {localConfig.announcementText || '¡Envío GRATIS a todo México en compras mayores a $499 MXN!'}
+                    </span>
+                    <span className="text-[#DFBE78] font-bold hidden sm:inline">
+                      • {localConfig.announcementCoupon || 'Cupón nuevo usuario: OV33BIENVENIDO'}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-neutral-400 flex items-center gap-3">
+                    <span>Rastrear Pedido</span>
+                    <span>Soporte</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Texto del Anuncio Principal
+                  </label>
+                  <input
+                    type="text"
+                    value={localConfig.announcementText || ''}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, announcementText: e.target.value }))}
+                    placeholder="¡Envío GRATIS a todo México en compras mayores a $499 MXN!"
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md font-semibold"
+                  />
+                </div>
+
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Código de Cupón Promocional
+                  </label>
+                  <input
+                    type="text"
+                    value={localConfig.announcementCoupon || ''}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, announcementCoupon: e.target.value }))}
+                    placeholder="Cupón nuevo usuario: OV33BIENVENIDO"
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md font-mono font-bold text-amber-700"
+                  />
+                </div>
+
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Etiqueta / Badge del Anuncio
+                  </label>
+                  <input
+                    type="text"
+                    value={localConfig.announcementBadge || ''}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, announcementBadge: e.target.value }))}
+                    placeholder="GRATIS, HOT, PROMO..."
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md uppercase font-bold"
+                  />
+                </div>
+
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Umbral de Envío Gratis ($ MXN)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={localConfig.freeShippingThreshold !== undefined ? localConfig.freeShippingThreshold : 499}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, freeShippingThreshold: Number(e.target.value) }))}
+                    placeholder="499"
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md font-bold"
+                  />
+                </div>
+
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Teléfono / WhatsApp de Contacto
+                  </label>
+                  <input
+                    type="text"
+                    value={localConfig.whatsappNumber || ''}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, whatsappNumber: e.target.value }))}
+                    placeholder="5213300000000"
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md font-mono"
+                  />
+                </div>
+
+                <div className="relative border-b border-neutral-200 focus-within:border-black transition-colors">
+                  <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                    Email de Soporte Oficial
+                  </label>
+                  <input
+                    type="email"
+                    value={localConfig.supportEmail || ''}
+                    onChange={(e) => setLocalConfig(prev => ({ ...prev, supportEmail: e.target.value }))}
+                    placeholder="soporte@ov33.com"
+                    className="w-full bg-transparent border-none outline-none py-2 text-xs font-body-md"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Slider Banners Customization */}
+            <div className="bg-white border border-neutral-200 p-6 md:p-8 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-neutral-100">
+                <div>
+                  <h3 className="font-display-xl text-lg uppercase font-bold flex items-center gap-2">
+                    <span className="material-symbols-outlined text-amber-600">view_carousel</span>
+                    Carrusel de Banners Principales (Hero) ({localBanners.length})
+                  </h3>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Reordena, añade o modifica las diapositivas de la portada de la tienda.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingBannerIdx(null);
+                    setBannerForm({
+                      badge: '🔥 NUEVA OFERTA FLASH',
+                      title: 'DESCUENTOS IRRESISTIBLES',
+                      subtitle: 'Aprovecha precios especiales en productos seleccionados',
+                      cta: 'COMPRAR AHORA',
+                      link: '/?sale=true',
+                      image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&auto=format&fit=crop&q=80',
+                      ctaStyle: 'bg-gradient-to-r from-orange-500 via-amber-500 to-[#C5A869] text-white',
+                      badgeStyle: 'bg-[#C5A869]/20 text-[#DFBE78] border border-[#C5A869]/40 font-black',
+                      bgOverlay: 'from-[#070D17]/95 via-[#0B131F]/80 to-transparent'
+                    });
+                  }}
+                  className="bg-black hover:bg-neutral-800 text-white font-button text-[10px] uppercase tracking-widest px-4 py-2.5 flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
+                >
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  AÑADIR BANNER
+                </button>
+              </div>
+
+              {/* List of active banners */}
+              <div className="space-y-4 mb-8">
+                {localBanners.map((banner, bIdx) => (
+                  <div key={banner.id || bIdx} className="border border-neutral-200 p-4 bg-[#fafafa] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1">
+                      {/* Image preview */}
+                      <div className="w-24 h-16 bg-neutral-900 border border-neutral-300 shrink-0 overflow-hidden relative">
+                        {banner.image ? (
+                          <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-neutral-500 text-xs">Sin foto</div>
+                        )}
+                        <span className="absolute bottom-0 right-0 bg-black text-white text-[9px] px-1 font-mono font-bold">
+                          #{bIdx + 1}
+                        </span>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] font-bold text-amber-700 tracking-wider block">
+                          {banner.badge}
+                        </span>
+                        <h4 className="font-display-xl text-sm font-bold text-black uppercase">
+                          {banner.title}
+                        </h4>
+                        <p className="text-xs text-neutral-500 line-clamp-1">
+                          {banner.subtitle}
+                        </p>
+                        <div className="flex items-center gap-2 pt-1 text-[10px] font-mono text-neutral-400">
+                          <span>Botón: <strong className="text-neutral-700">{banner.cta}</strong></span>
+                          <span>•</span>
+                          <span>Enlace: <strong className="text-neutral-700">{banner.link}</strong></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 self-end md:self-center">
+                      <button
+                        type="button"
+                        disabled={bIdx === 0}
+                        onClick={() => {
+                          const updated = [...localBanners];
+                          const temp = updated[bIdx];
+                          updated[bIdx] = updated[bIdx - 1];
+                          updated[bIdx - 1] = temp;
+                          setLocalBanners(updated);
+                        }}
+                        className={`p-1.5 border ${bIdx === 0 ? 'border-neutral-200 text-neutral-300 cursor-not-allowed' : 'border-neutral-300 text-black hover:border-black hover:bg-neutral-100 cursor-pointer'}`}
+                        title="Subir posición"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">arrow_upward</span>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={bIdx === localBanners.length - 1}
+                        onClick={() => {
+                          const updated = [...localBanners];
+                          const temp = updated[bIdx];
+                          updated[bIdx] = updated[bIdx + 1];
+                          updated[bIdx + 1] = temp;
+                          setLocalBanners(updated);
+                        }}
+                        className={`p-1.5 border ${bIdx === localBanners.length - 1 ? 'border-neutral-200 text-neutral-300 cursor-not-allowed' : 'border-neutral-300 text-black hover:border-black hover:bg-neutral-100 cursor-pointer'}`}
+                        title="Bajar posición"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingBannerIdx(bIdx);
+                          setBannerForm({ ...banner });
+                        }}
+                        className="p-1.5 border border-neutral-300 hover:border-black text-black hover:bg-neutral-100 cursor-pointer flex items-center gap-1 text-[10px] font-label-caps uppercase"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">edit</span>
+                        Editar
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (localBanners.length <= 1) {
+                            showToast('Debe haber al menos 1 banner en el carrusel', 'error');
+                            return;
+                          }
+                          if (window.confirm('¿Seguro que deseas eliminar este banner?')) {
+                            setLocalBanners(localBanners.filter((_, i) => i !== bIdx));
+                          }
+                        }}
+                        className="p-1.5 border border-red-200 hover:border-red-500 text-red-600 hover:bg-red-50 cursor-pointer flex items-center gap-1 text-[10px] font-label-caps uppercase"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">delete</span>
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Banner Edit Form */}
+              <div className="border-t border-neutral-200 pt-6">
+                <h4 className="font-display-xl text-sm font-bold uppercase mb-4 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">
+                    {editingBannerIdx !== null ? 'edit' : 'add_circle'}
+                  </span>
+                  {editingBannerIdx !== null ? `Editar Banner #${editingBannerIdx + 1}` : 'Crear Nuevo Banner'}
+                </h4>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!bannerForm.title || !bannerForm.image) {
+                      showToast('El título y la imagen son obligatorios para el banner.', 'error');
+                      return;
+                    }
+                    if (editingBannerIdx !== null) {
+                      const updated = [...localBanners];
+                      updated[editingBannerIdx] = { ...bannerForm };
+                      setLocalBanners(updated);
+                      showToast('Banner actualizado en memoria local.', 'info', 2000);
+                      setEditingBannerIdx(null);
+                    } else {
+                      setLocalBanners([...localBanners, { id: Date.now(), ...bannerForm }]);
+                      showToast('Nuevo banner añadido a la lista.', 'info', 2000);
+                    }
+                  }}
+                  className="space-y-4 bg-neutral-50 p-6 border border-neutral-200"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        Etiqueta / Badge Superior
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.badge}
+                        onChange={(e) => setBannerForm({ ...bannerForm, badge: e.target.value })}
+                        placeholder="🔥 OFERTA EXCLUSIVA"
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md font-bold text-amber-800"
+                        required
+                      />
+                    </div>
+
+                    <div className="relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        Título Principal
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.title}
+                        onChange={(e) => setBannerForm({ ...bannerForm, title: e.target.value })}
+                        placeholder="Marcas Oficiales, Precios Irresistibles"
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md font-bold uppercase"
+                        required
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        Subtítulo / Descripción
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.subtitle}
+                        onChange={(e) => setBannerForm({ ...bannerForm, subtitle: e.target.value })}
+                        placeholder="Descubre Apple, Nike, Xiaomi, Casio con Envío Gratis..."
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md"
+                      />
+                    </div>
+
+                    <div className="relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        Texto de Botón CTA
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.cta}
+                        onChange={(e) => setBannerForm({ ...bannerForm, cta: e.target.value })}
+                        placeholder="Explorar Marcas"
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md font-bold uppercase"
+                        required
+                      />
+                    </div>
+
+                    <div className="relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        Enlace de Destino (URL o ruta)
+                      </label>
+                      <input
+                        type="text"
+                        value={bannerForm.link}
+                        onChange={(e) => setBannerForm({ ...bannerForm, link: e.target.value })}
+                        placeholder="/catalog o /?sale=true"
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md font-mono"
+                        required
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 relative border-b border-neutral-300 focus-within:border-black transition-colors">
+                      <label className="block font-label-caps text-[9px] text-neutral-400 uppercase tracking-widest mb-1">
+                        URL de Imagen de Fondo (HTTPS)
+                      </label>
+                      <input
+                        type="url"
+                        value={bannerForm.image}
+                        onChange={(e) => setBannerForm({ ...bannerForm, image: e.target.value })}
+                        placeholder="https://images.unsplash.com/..."
+                        className="w-full bg-transparent border-none outline-none py-1.5 text-xs font-body-md font-mono"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Banner Image Preview */}
+                  {bannerForm.image && (
+                    <div className="mt-2 p-2 bg-neutral-900 border border-neutral-300 rounded max-w-sm">
+                      <span className="text-[9px] text-neutral-400 font-label-caps uppercase block mb-1">Previsualización de Foto:</span>
+                      <img
+                        src={bannerForm.image}
+                        alt="Preview banner"
+                        className="w-full h-32 object-cover rounded"
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="submit"
+                      className="bg-black hover:bg-neutral-800 text-white font-button text-[10px] uppercase tracking-widest px-6 py-2.5 cursor-pointer"
+                    >
+                      {editingBannerIdx !== null ? 'Actualizar en Lista' : 'Añadir a Carrusel'}
+                    </button>
+                    {editingBannerIdx !== null && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingBannerIdx(null)}
+                        className="border border-neutral-300 text-neutral-600 font-button text-[10px] uppercase tracking-widest px-4 py-2.5 cursor-pointer hover:bg-neutral-100"
+                      >
+                        Cancelar Edición
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
             </div>
           </div>

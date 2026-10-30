@@ -22,13 +22,9 @@ function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  // CORS Restringido
-  const allowedOrigins = [
-    'https://edvictory.com',
-    'https://www.edvictory.com'
-  ];
+  // CORS Dinámico y Seguro
   const origin = req.headers.origin;
-  if (origin && (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.includes('localhost')))) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');

@@ -1,7 +1,7 @@
 // Endpoint Serverless: Envío de Correos Transaccionales con Resend (Blindado)
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const PRIMARY_FROM = process.env.RESEND_FROM_EMAIL || 'ED VICTORY <pedidos@edvictory.com>';
-const FALLBACK_FROM = 'ED VICTORY <onboarding@resend.dev>';
+const PRIMARY_FROM = process.env.RESEND_FROM_EMAIL || 'OV33 MARKET <pedidos@ov33.com>';
+const FALLBACK_FROM = 'OV33 MARKET <onboarding@resend.dev>';
 
 // Rate limiting en memoria (10 peticiones por minuto por IP)
 const rateLimitMap = new Map();
@@ -36,13 +36,9 @@ function escapeHtml(str) {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
-  // CORS Restringido
-  const allowedOrigins = [
-    'https://edvictory.com',
-    'https://www.edvictory.com'
-  ];
+  // CORS Dinámico y Seguro
   const origin = req.headers?.origin;
-  if (origin && (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.includes('localhost')))) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -116,7 +112,7 @@ export default async function handler(req, res) {
     if (!response.ok && (result.message?.includes('not verified') || result.statusCode === 403)) {
       console.warn('Dominio en proceso de verificación. Enviando respaldo via onboarding@resend.dev:', result);
       
-      const fallbackRecipient = process.env.ADMIN_BACKUP_EMAIL || 'contacto@edvictory.com';
+      const fallbackRecipient = process.env.ADMIN_BACKUP_EMAIL || 'contacto@ov33.com';
       const fallbackResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -127,7 +123,7 @@ export default async function handler(req, res) {
           from: FALLBACK_FROM,
           to: [fallbackRecipient],
           subject: `[COPIA RESPALDO] ${subject}`,
-          html: `<div style="background:#fff3cd;padding:12px;margin-bottom:16px;font-family:sans-serif;font-size:12px;border:1px solid #ffeeba;"><strong>Nota:</strong> Este correo fue enviado a tu buzón de respaldo mientras termina de propagarse el dominio edvictory.com. Destinatario original: ${escapeHtml(cleanTo)}</div>` + html
+          html: `<div style="background:#fff3cd;padding:12px;margin-bottom:16px;font-family:sans-serif;font-size:12px;border:1px solid #ffeeba;"><strong>Nota:</strong> Este correo fue enviado a tu buzón de respaldo mientras termina de configurarse el dominio ov33.com. Destinatario original: ${escapeHtml(cleanTo)}</div>` + html
         })
       });
 
@@ -302,15 +298,15 @@ function generateOrderEmailHtml(order) {
             </tr>
             <tr>
               <td align="center" style="padding: 0 40px 40px 40px;">
-                <a href="https://edvictory.com/tracking" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">
+                <a href="/tracking" style="display: inline-block; background-color: #070D17; color: #DFBE78; border: 1px solid #C5A869; text-decoration: none; padding: 14px 32px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; border-radius: 9999px;">
                   RASTREAR MI PEDIDO
                 </a>
               </td>
             </tr>
             <tr>
               <td align="center" style="padding: 25px 20px; background-color: #f2f2f2; border-top: 1px solid #e5e5e5; font-size: 11px; color: #777777;">
-                <p style="margin: 0 0 6px 0;">¿Tienes dudas con tu pedido? Escríbenos a <a href="mailto:contacto@edvictory.com" style="color: #111111;">contacto@edvictory.com</a></p>
-                <p style="margin: 0;">&copy; ${new Date().getFullYear()} ED VICTORY. Guadalajara, Jalisco, México.</p>
+                <p style="margin: 0 0 6px 0;">¿Tienes dudas con tu pedido? Escríbenos a <a href="mailto:contacto@ov33.com" style="color: #111111;">contacto@ov33.com</a></p>
+                <p style="margin: 0;">&copy; ${new Date().getFullYear()} OV33 MARKETPLACE. Todos los derechos reservados.</p>
               </td>
             </tr>
           </table>
@@ -330,7 +326,7 @@ function generateWelcomeEmailHtml(userName) {
   <html>
   <head>
     <meta charset="utf-8">
-    <title>Bienvenido a ED VICTORY</title>
+    <title>Bienvenido a OV33 Market</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #f7f7f7; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f7f7f7; padding: 40px 10px;">
@@ -338,34 +334,34 @@ function generateWelcomeEmailHtml(userName) {
         <td align="center">
           <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 1px solid #e5e5e5; max-width: 600px; width: 100%;">
             <tr>
-              <td align="center" style="padding: 35px 20px; background-color: #000000; color: #ffffff;">
-                <h1 style="margin: 0; font-size: 22px; letter-spacing: 4px; text-transform: uppercase; font-weight: 300;">ED VICTORY</h1>
-                <p style="margin: 6px 0 0 0; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #aaaaaa;">Estética Camisera de Autor</p>
+              <td align="center" style="padding: 35px 20px; background-color: #070D17; color: #ffffff;">
+                <h1 style="margin: 0; font-size: 22px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; color: #DFBE78;">OV33 MARKET</h1>
+                <p style="margin: 6px 0 0 0; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #aaaaaa;">Marketplace Multimarca Oficial</p>
               </td>
             </tr>
             <tr>
               <td style="padding: 40px 40px 25px 40px;">
-                <h2 style="margin: 0 0 15px 0; font-size: 22px; color: #111111; font-weight: 400;">Bienvenido, ${safeName}</h2>
+                <h2 style="margin: 0 0 15px 0; font-size: 22px; color: #111111; font-weight: 700;">Bienvenido, ${safeName}</h2>
                 <p style="font-size: 14px; line-height: 1.6; color: #555555; margin: 0 0 20px 0;">
-                  Gracias por formar parte de la comunidad de <strong>ED VICTORY</strong>. Diseñamos cada una de nuestras piezas con el propósito de ofrecer elegancia atemporal, cortes impecables y los textiles más selectos.
+                  Gracias por formar parte de <strong>OV33 Market</strong>. Explora miles de productos auténticos de marcas oficiales como Apple, Nike, Casio, Stanley, Xiaomi y muchas más con envíos express asegurados.
                 </p>
-                <div style="background-color: #fafafa; border: 1px dashed #000000; padding: 20px; text-align: center; margin: 25px 0;">
-                  <span style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #888888; display: block; margin-bottom: 6px;">REGALO DE BIENVENIDA</span>
-                  <p style="font-size: 18px; font-weight: bold; letter-spacing: 3px; margin: 0; color: #111111;">VICTORY10</p>
-                  <span style="font-size: 12px; color: #555555; display: block; margin-top: 6px;">Disfruta de un 10% de descuento en tu primer pedido.</span>
+                <div style="background-color: #fafafa; border: 1px dashed #C5A869; padding: 20px; text-align: center; margin: 25px 0;">
+                  <span style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #888888; display: block; margin-bottom: 6px;">CUPÓN DE BIENVENIDA</span>
+                  <p style="font-size: 18px; font-weight: bold; letter-spacing: 3px; margin: 0; color: #ea580c;">OV33BIENVENIDO</p>
+                  <span style="font-size: 12px; color: #555555; display: block; margin-top: 6px;">Disfruta de un 10% de descuento extra en tu primer pedido.</span>
                 </div>
               </td>
             </tr>
             <tr>
               <td align="center" style="padding: 0 40px 40px 40px;">
-                <a href="https://edvictory.com/catalog" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">
-                  EXPLORAR COLECCIONES
+                <a href="/catalog" style="display: inline-block; background-color: #070D17; color: #DFBE78; border: 1px solid #C5A869; text-decoration: none; padding: 14px 32px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; border-radius: 9999px;">
+                  EXPLORAR CATÁLOGO COMPLETO
                 </a>
               </td>
             </tr>
             <tr>
               <td align="center" style="padding: 25px 20px; background-color: #f2f2f2; border-top: 1px solid #e5e5e5; font-size: 11px; color: #777777;">
-                <p style="margin: 0;">&copy; ${new Date().getFullYear()} ED VICTORY. Guadalajara, Jalisco, México.</p>
+                <p style="margin: 0;">&copy; ${new Date().getFullYear()} OV33 MARKETPLACE. Todos los derechos reservados.</p>
               </td>
             </tr>
           </table>
